@@ -1,11 +1,11 @@
-{% extends "twitter_clone/tc-base.html" %}
+{% extends "post_it/tc-base.html" %}
 
 {% block title %}
 
 {% if user.is_authenticated %}
-T-Clone Welcomes {{user.username}}
+Post It! Welcomes {{user.username}}
 {% else %}
-T-Clone Login
+Post It! - Login
 {% endif %}
 
 {% endblock %}

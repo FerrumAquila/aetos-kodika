@@ -301,7 +301,7 @@ def landing_page(request):
     print(THIN_LINE)
     print "landing page"
 
-    return render(request, "twitter_clone/tc-login.html", context)
+    return render(request, "post_it/tc-login.html", context)
 
 
 def login(request):
@@ -385,7 +385,7 @@ def home(request):
     else:
         return redirect("tc_landing_page")
 
-    return render(request, "twitter_clone/tc-home.html", context)
+    return render(request, "post_it/tc-home.html", context)
 
 
 def timeline(request, username=None):
@@ -414,7 +414,7 @@ def timeline(request, username=None):
         "timeline": Tweet.objects.filter(id__in=user_timeline.populate_timeline()).order_by("-created_at"),
     })
 
-    return render(request, "twitter_clone/tc-timeline.html", context)
+    return render(request, "post_it/tc-timeline.html", context)
 
 
 def profile(request):
@@ -431,7 +431,7 @@ def profile(request):
         "user_profile": user_profile,
     })
 
-    return render(request, "twitter_clone/tc-profile.html", context)
+    return render(request, "post_it/tc-profile.html", context)
 
 
 def tweet(request, tweet_id=None):
@@ -485,4 +485,4 @@ def tweet(request, tweet_id=None):
             print(THIN_LINE)
             print "taggable_profiles not found"
 
-    return render(request, "twitter_clone/tc-tweet.html", context)
+    return render(request, "post_it/tc-tweet.html", context)
