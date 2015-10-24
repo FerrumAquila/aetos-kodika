@@ -125,6 +125,7 @@ INSTALLED_APPS = (
     'django_extensions',
 
     'core',
+    'post_it',
 )
 
 # A sample logging configuration. The only tangible logging

@@ -1,0 +1,178 @@
+{% extends "twitter_clone/tc-base.html" %}
+
+{% block title %} T-Clone - {{user.username}}'s Home {% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+<!--=== Content - Start ===-->
+<div class="col-sm-12" id="stories">
+    <div class="page-header text-muted divider" style="">
+        <h2 id="tweetTweet">Feed Tweets!!!</h2>
+    </div>
+    <form method="POST" id="tweetForm" class="form" action="{% url 'tc_post_tweet' %}" accept-charset="UTF-8">
+        {% csrf_token %}
+        <div class="input-group">
+            <span class="input-group-addon" id="passwordInput">@</span>
+            <!-- ===<input type="text" name="tweet_text" class="form-control" value="" placeholder="tweet away!!!">=== -->
+            <textarea class="form-control" name="tweet_text" style="width: 100%; height:125%"
+                      placeholder="tweet away!!!"></textarea>
+        </div>
+        {% if taggable_profiles %}
+
+        <label id="tweetTagsButton" for="sel2">tag peeps</label>
+        <select id="tweetTags" style="display: none" multiple class="form-control" id="sel2">
+            {% for profile in taggable_profiles %}
+            <option value="{{profile.username}}">{{profile.username}}</option>
+            {% empty %}
+            {% endfor %}
+        </select>
+
+        {% endif %}
+    </form>
+    <a href="#" id="tweetNow">@tweet</a>
+</div>
+
+{% for tweet in feed %}
+<!--=== Tweet - Start ===-->
+<div class="row">
+    <div class="col-sm-10">
+        {% if tweet.replies_to.all.0 %}
+        <h3>replies to "{{tweet.replies_to.all.0.parent_tweet.text}}"</h3>
+        {% endif %}
+        <h3>{{tweet.text}}</h3>
+        {% for tag in tweet.tags.all %}
+        <h4 style="display:inline"><span class="label label-primary">{{tag.username}}</span></h4>
+        {% endfor %}
+        <h4>
+            <small class="text-muted">
+                <a class="likeTweet" id="likeTweetID{{tweet.id}}" href="#">
+                    Like {% if tweet.liked_by_profiles.all.0 %}
+                    <span id="likeCountID{{tweet.id}}" class="badge">{{tweet.liked_by_profiles.all.count}}</span>
+                    {% endif %}
+                </a>
+                <a href="{% if tweet.replies_to.all.0 %}{% url 'tc_tweet' tweet.replies_to.all.0.parent_tweet.id %}{% else %}{% url 'tc_tweet' tweet.id %}{% endif %}"
+                   class="text-muted">
+                    • Reply {% if tweet.parent_to.all.0 %}
+                    <span class="badge">{{tweet.parent_to.all.count}}</span>
+                    {% else %}<span class="badge">{{tweet.replies_to.all.0.parent_tweet.parent_to.all.count}}</span>
+                    {% endif %}
+                </a>
+                • {{tweet.created_at}}
+                • <a href="{% url 'tc_timeline' tweet.author.username %}" class="text-muted">{{tweet.author.username
+               }}</a>
+            </small>
+        </h4>
+    </div>
+    <div class="col-sm-2">
+        <a href="{% url 'tc_timeline' tweet.author.username %}" class="pull-right"><img
+                src="http://api.randomuser.me/portraits/thumb/men/86.jpg" class="img-circle"></a>
+    </div>
+</div>
+
+<div class="row divider">
+    <div class="col-sm-12">
+        <hr>
+    </div>
+</div>
+<!--=== Tweet - End ===-->
+{% empty %}
+<div class="row">
+    <div class="col-sm-10">
+        <h3>thou shall follow peeps!!</h3>
+        <small class="text-muted">Just Now!!! • <a href="#" class="text-muted">T-Clone BOT</a></small>
+    </div>
+    <div class="col-sm-2">
+        <a href="#" class="pull-right"><img src="http://api.randomuser.me/portraits/thumb/men/86.jpg"
+                                            class="img-circle"></a>
+    </div>
+</div>
+
+<div class="row divider">
+    <div class="col-sm-12">
+        <hr>
+    </div>
+</div>
+{% endfor %}
+<!--=== Content - End ===-->
+
+<!--=== Follow - Start ===-->
+<div class="col-sm-12">
+    <div class="page-header text-muted divider">
+        Follow Suggestion
+    </div>
+</div>
+
+<div class="row">
+    {% for suggestion in follow_suggestions %}
+    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        <a href="{% url 'tc_timeline' suggestion.username %}"><img
+                src="http://api.randomuser.me/portraits/thumb/men/86.jpg" class="img-respsonsive img-circle"></a>
+        <h4>{{suggestion.username}}<a><i class="glyphicon glyphicon-plus"><span style="display:none">{{suggestion.username}}</span></i>
+        </a></h4>
+    </div>
+    {% if forloop.counter|divisibleby:3 %}
+</div>
+
+<div class="row">
+    {% endif %}
+    {% empty %}
+    <div class="col-sm-6 col-md-4">
+        <h3>No Suggestions</h3>
+    </div>
+    {% endfor %}
+</div>
+<!--=== Follow - End ===-->
+{% endblock %}
+
+{% block script %}
+
+<!--=== Follow Animation and Process - Start ===-->
+<script>
+  $(".glyphicon-plus").click(function(){
+    url = "{% url 'tc_follow' %}/" + $(this).html().split(':none">')[1].split("</span>")[0]
+    followUser($(this), url)
+  })
+
+
+
+</script>
+<!--=== Follow Animation and Process - End ===-->
+
+<!--=== Taggable Profiles Animation and Process - Start ===-->
+<script>
+  $("#tweetTagsButton").click(function(){
+    $("#tweetTags").toggle()
+  })
+
+
+
+</script>
+<!--=== Taggable Profiles Animation and Process - End ===-->
+
+<!--=== Tweet Popup and Process - Start ===-->
+<script>
+  $("#tweetNow").click(function(){
+    url = "{% url 'tc_post_tweet' %}"
+    tweet(url)
+  })
+
+
+
+</script>
+<!--=== Tweet Popup and Process - End ===-->
+
+<!--=== Like Tweet and Process - Start ===-->
+<script>
+  $(".likeTweet").click(function(){
+    tweet_id = $(this).attr("id").split("ID")[1]
+    url = "{% url 'tc_like_tweet' %}/" + tweet_id
+    likeTweet($(this), url, tweet_id)
+  })
+
+
+
+</script>
+<!--=== Like Tweet and Process - End ===-->
+{% endblock %}

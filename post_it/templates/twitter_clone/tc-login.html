@@ -1,0 +1,116 @@
+{% extends "twitter_clone/tc-base.html" %}
+
+{% block title %}
+
+{% if user.is_authenticated %}
+T-Clone Welcomes {{user.username}}
+{% else %}
+T-Clone Login
+{% endif %}
+
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+<div class="col-xs-2 hidden-sm col-md-1 col-lg-2"
+     style="">
+
+</div>
+
+{% if user.is_authenticated %}
+<div class="col-xs-1 col-sm-6 col-md-4 col-lg-4">
+    {% for feature in "ABC" %}
+    <h3>Exciting Feature {{feature}}</h3>
+    <ul>
+        {% for sub_point in "1234" %}
+        <li>Time pass bakar {{forloop.counter}}with {{user.username}}</li>
+        {% endfor %}
+    </ul>
+    {% endfor %}
+    <h3 style="text-align: center"><a href="{% url 'tc_home' %}">tweet now</a></h3>
+</div>
+{% else %}
+<div class="col-xs-1 col-sm-6 col-md-4 col-lg-4"
+     style="
+              height: 33%;
+              padding-top: 10px;
+              padding-right: 10px;
+              background-color: rgba(0, 0, 0, 0.20);">
+    <form method="POST" id="loginForm" class="form-login" action="{% url 'tc_login' %}" accept-charset="UTF-8">
+        {% csrf_token %}
+        <div class="input-group">
+            <span class="input-group-addon" id="emailInput">@</span>
+            <input type="text" name="login_email" class="form-control" placeholder="email">
+        </div>
+
+        <div class="row divider"
+             style="height: auto; margin: 0px;">
+            <div class="col-sm-12">
+                <hr>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <span class="input-group-addon" id="passwordInput">*</span>
+            <input type="password" name="login_password" class="form-control" placeholder="password">
+        </div>
+
+        <div class="row divider"
+             style="height: auto; margin: 0px;">
+            <div class="col-sm-12">
+                <hr>
+            </div>
+        </div>
+
+        <a id="formSubmit" href="#">
+            <button type="button" class="btn btn-default col-xs-12"
+                    style="
+                  background-color: rgba(0, 0, 0, 0.33);
+                  text-align: center;
+                  color: white;">
+                login!
+            </button>
+        </a>
+
+        <div class="row divider"
+             style="height: auto; margin: 0px;">
+            <div class="col-sm-12">
+                <hr>
+            </div>
+        </div>
+
+        <!-- === FB Login - Start === --
+        <a id="formFBSubmit" href="#">
+          <button type="button" class="btn btn-default col-xs-12"
+                style="
+                background-color: rgba(0, 0, 0, 0.33);
+                text-align: center;
+                color: white;">
+            fb!</button>
+        </a>
+        <!-- === FB Login - End === -->
+
+    </form>
+</div>
+{% endif %}
+
+<div class="col-xs-2 col-sm-3 col-md-4 col-lg-4"
+     style="">
+
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+  $("#formSubmit").click(function(){
+    $( "#loginForm" ).submit();
+  })
+
+
+
+
+
+</script>
+{% endblock %}

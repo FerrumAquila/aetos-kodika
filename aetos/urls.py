@@ -7,7 +7,7 @@ admin.autodiscover()
 
 urlpatterns = [
     url(r'', include('core.urls')),
-    url(r'^post_it/$', include('post_it.urls')),
+    url(r'^post_it/', include('post_it.urls')),
 ] + static(
     settings.STATIC_URL, document_root=settings.STATIC_ROOT
 ) + static(

@@ -1,0 +1,34 @@
+{% extends "twitter_clone/tc-base.html" %}
+
+{% block title %} T-Clone - {{user_profile.username}}'s Tweets {% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+<!--=== Content - Start ===-->
+<div class="col-sm-12" id="stories">
+    <div class="page-header text-muted divider" style="">
+        <h2>
+            <span>
+                <img src="http://api.randomuser.me/portraits/thumb/men/86.jpg" class="img-circle">
+            </span>
+            {{user_profile.username}}'s PROFILE!!
+        </h2>
+    </div>
+    {% for feature in "ABC" %}
+    <h3>Exciting Info {{feature}}</h3>
+    <ul>
+        {% for sub_point in "1234" %}
+        <li>Time pass bakar {{forloop.counter}} with {{user.username}}</li>
+        {% endfor %}
+    </ul>
+    {% endfor %}
+    <h3 style="text-align: center"><a href="{% url 'tc_home' %}">tweet now</a></h3>
+</div>
+<!--=== Content - End ===-->
+
+{% endblock %}
+
+{% block script %}
+{% endblock %}

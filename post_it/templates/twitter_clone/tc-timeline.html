@@ -1,0 +1,82 @@
+{% extends "twitter_clone/tc-base.html" %}
+
+{% block title %} T-Clone - {{user_profile.username}}'s Tweets {% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+<!--=== Content - Start ===-->
+<div class="col-sm-12" id="stories">
+    <div class="page-header text-muted divider" style="">
+        <h2>{{user_profile.username}}'s TWEETS!!</h2>
+    </div>
+</div>
+
+{% for tweet in timeline %}
+<!--=== Tweet - Start ===-->
+<div class="row">
+    <div class="col-sm-10">
+        {% if tweet.replies_to.all.0 %}
+        <h3>replies to "{{tweet.replies_to.all.0.parent_tweet.text}}"</h3>
+        {% endif %}
+        <h3>{{tweet.text}}</h3>
+        {% for tag in tweet.tags.all %}
+        <h4 style="display:inline"><span class="label label-primary">{{tag.username}}</span></h4>
+        {% endfor %}
+        <h4>
+            <small class="text-muted">
+                <a class="likeTweet" id="likeTweetID{{tweet.id}}" href="#">
+                    Like {% if tweet.liked_by_profiles.all.0 %}
+                    <span id="likeCountID{{tweet.id}}" class="badge">{{tweet.liked_by_profiles.all.count}}</span>
+                    {% endif %}
+                </a>
+                <a href="{% if tweet.replies_to.all.0 %}{% url 'tc_tweet' tweet.replies_to.all.0.parent_tweet.id %}{% else %}{% url 'tc_tweet' tweet.id %}{% endif %}"
+                   class="text-muted">
+                    • Reply {% if tweet.parent_to.all.0 %}
+                    <span class="badge">{{tweet.parent_to.all.count}}</span>
+                    {% else %}<span class="badge">{{tweet.replies_to.all.0.parent_tweet.parent_to.all.count}}</span>
+                    {% endif %}
+                </a>
+                • {{tweet.created_at}}
+                • <a href="{% url 'tc_timeline' tweet.author.username %}" class="text-muted">{{tweet.author.username}}</a>
+            </small>
+        </h4>
+    </div>
+    <div class="col-sm-2">
+        <a href="{% url 'tc_timeline' tweet.author.username %}" class="pull-right"><img
+                src="http://api.randomuser.me/portraits/thumb/men/86.jpg" class="img-circle"></a>
+    </div>
+</div>
+
+<div class="row divider">
+    <div class="col-sm-12">
+        <hr>
+    </div>
+</div>
+<!--=== Tweet - End ===-->
+{% empty %}
+
+<div class="col-sm-12">
+    <h3 style="text-align: center"><a href="{% url 'tc_home' %}">thou shall tweet!!</a></h3>
+</div>
+
+{% endfor %}
+<!--=== Content - End ===-->
+
+{% endblock %}
+
+{% block script %}
+<!--=== Like Tweet and Process - Start ===-->
+<script>
+  $(".likeTweet").click(function(){
+    tweet_id = $(this).attr("id").split("ID")[1]
+    url = "{% url 'tc_like_tweet' %}/" + tweet_id
+    likeTweet($(this), url, tweet_id)
+  })
+
+
+
+</script>
+<!--=== Like Tweet and Process - End ===-->
+{% endblock %}

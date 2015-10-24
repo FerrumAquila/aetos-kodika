@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>{% block title %} {% endblock %}</title>
+    <meta name="generator" content="Bootply"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href="{% static 'twitter_clone/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="{% static 'twitter_clone/css/styles.css' %}" rel="stylesheet">
+    {% block style %}
+    {% endblock %}
+</head>
+<body>
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '461446270669095',
+      xfbml      : true,
+      version    : 'v2.2'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
+
+</script>
+<div class="wrapper">
+    <div class="box">
+        <div class="row">
+
+            <!--=== Side Bar - Start ===-->
+            <div class="column hidden-xs col-sm-3 col-md-3 col-lg-3" id="sidebar"
+                 style="padding: 32px">
+                <a class="logo" href="{% url 'tc_landing_page' %}">TC</a>
+                <ul class="nav">
+                    {% if user.is_authenticated %}
+                    <li class="active">
+                        <a href="{% url 'tc_home' %}">home</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'tc_timeline' user.username %}">tweets</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'tc_profile' %}">profile</a>
+                    </li>
+                    {% else %}
+                    {% endif %}
+                </ul>
+                <ul class="nav hidden-xs" id="sidebar-footer">
+                    <li>
+                        <a href="http://www.facebook.com/djvishu"><h3>T-Clone</h3>Made with <i
+                                class="glyphicon glyphicon-heart-empty"></i> by IronEagle</a>
+                    </li>
+                </ul>
+            </div>
+            <!--=== Side Bar - End ===-->
+
+            <!--=== Main - Start ===-->
+            <div class="column col-xs-12 col-sm-9 col-md-9 col-lg-9" id="main">
+                <div class="padding">
+                    <div class="full col-xs-12 col-sm-9 col-md-9 col-lg-9">
+                        {% block content %}
+                        {% endblock %}
+
+                        <!--=== Footer - Start ===-->
+                        <div class="col-sm-12">
+                            <div class="page-header text-muted divider">
+                                Connect with Developer
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <a href="http://www.facebook.com/djvishu">Facebook</a>
+                                <small class="text-muted">|</small>
+                                <a href="https://plus.google.com/+VisheshBangotraIronEagle">Google+</a>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row" id="footer">
+                            <div class="col-sm-6">
+
+                            </div>
+                            <div class="col-sm-6">
+                                <p>
+                                    <span class="pull-right">©Copyright Inc.</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <h3 class="text-center">
+                            <a href="http://www.facebook.com/djvishu" target="ext">Made by IronEagle</a>
+                        </h3>
+
+                        <hr>
+                        <!--=== Footer - End ===-->
+
+                    </div>
+                    <!-- /col-9 -->
+                </div>
+                <!-- /padding -->
+            </div>
+            <!--=== Main - End ===-->
+
+        </div>
+    </div>
+</div>
+<!--=== Script References - Start ===-->
+<script src="{% static 'twitter_clone/js/jquery.js' %}"></script>
+<!--<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>-->
+<script src="{% static 'twitter_clone/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'twitter_clone/js/scripts.js' %}"></script>
+<script src="{% static 'twitter_clone/plugins/TouchSwipe-Jquery-Plugin-master/jquery.touchSwipe.min.js' %}"></script>
+<!--=== Script References - End ===-->
+
+<!--=== Swipe - Start ===-->
+<script>
+$(document).ready(function(){
+  urlLeft = "{% url 'tc_timeline' %}"
+  swipeLeft(urlLeft)
+
+  urlRight = "{% url 'tc_home' %}"
+  swipeLeft(urlRight)
+})
+
+</script>
+<!--=== Swipe - End ===-->
+
+{% block script %}
+{% endblock %}
+</body>
+</html>
