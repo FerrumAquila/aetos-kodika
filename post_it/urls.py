@@ -11,9 +11,11 @@ urlpatterns = [
 
     # api urls
     url(r'^follow/(?P<username>\w+)/$', app_views.follow, name='pt_follow'),
-    url(r'^tweet/$', app_views.tweet, name='pt_tweet'),
-    url(r'^tweet/(?P<tweet_id>\w+)/$', app_views.tweet, name='pt_reply_tweet'),
-    url(r'^tweet/like/(?P<tweet_id>\w+)/$', app_views.like_tweet, name='pt_like_tweet'),
+    url(r'^sticky/$', app_views.sticky, name='pt_sticky'),
+    url(r'^sticky/(?P<sticky_id>\w+)/$', app_views.sticky, name='pt_reply_sticky'),
+    url(r'^sticky/fav/(?P<sticky_id>\w+)/$', app_views.fav_sticky, name='pt_fav_sticky'),
 
-    url(r'^$', app_views.home, name='home'),
+    # html view urls
+    url(r'^home/$', app_views.home, name='pt_home'),
+    url(r'^$', app_views.home, name='pt_home'),
 ]

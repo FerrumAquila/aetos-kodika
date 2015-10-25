@@ -67,3 +67,20 @@ def sticky_desk(request, username=None):
 
     return JsonResponse(response)
 
+
+def follow(request, username=None):
+    return JsonResponse(success_false({}, 'API under construction', 'api_not_done'))
+
+
+def sticky(request, sticky_id=None):
+    return JsonResponse(success_false({}, 'API under construction', 'api_not_done'))
+
+
+def fav_sticky(request, sticky_id):
+    return JsonResponse(success_false({}, 'API under construction', 'api_not_done'))
+
+
+@login_required
+def home(request):
+    return render(request, "post_it/index.html", {})
+
