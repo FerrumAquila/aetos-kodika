@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Material Admin</title>
+    <title>Aetos Kodika</title>
 
     <!-- Vendor CSS -->
     <link href="{% static 'vendors/fullcalendar/fullcalendar.css' %}" rel="stylesheet">
@@ -32,7 +32,7 @@
         </li>
 
         <li class="logo hidden-xs">
-            <a href="index.html">Aetos Kodika</a>
+            <a href="{% url 'core_home' %}">Aetos Kodika</a>
         </li>
 
         <li class="pull-right">
@@ -86,15 +86,6 @@
                     <ul class="main-menu">
                         <li>
                             <a href="{% url 'core_profile' %}"><i class="md md-person"></i> View Profile</a>
-                        </li>
-                        <li>
-                            <a href=""><i class="md md-settings-input-antenna"></i> Privacy Settings</a>
-                        </li>
-                        <li>
-                            <a href=""><i class="md md-settings"></i> Settings</a>
-                        </li>
-                        <li>
-                            <a href=""><i class="md md-history"></i> Logout</a>
                         </li>
                     </ul>
                 </div>
