@@ -17,7 +17,7 @@ class TrackingFields(models.Model):
         abstract = True
 
 
-class ProfileDetails(TrackingFields):
+class Profile(TrackingFields):
     user = models.ForeignKey(User, related_name='profile')
     username = models.CharField(max_length=50, unique=True)
     gender = models.CharField(max_length=2)
@@ -31,13 +31,13 @@ class ProfileDetails(TrackingFields):
 
     def get_follow_suggestion(self):
         exclude_ids = self.following.all().values_list('id', flat=True) + [self.id]
-        return ProfileDetails.objects.all().exclude(id__in=exclude_ids).order_by("-id")
+        return Profile.objects.all().exclude(id__in=exclude_ids).order_by("-id")
 
 
 class Sticky(TrackingFields):
-    author = models.ForeignKey(ProfileDetails, related_name='stickies')
+    author = models.ForeignKey(Profile, related_name='stickies')
     text = models.TextField(max_length=1000)
-    tags = models.ManyToManyField(ProfileDetails, related_name='tagged_in')
+    tags = models.ManyToManyField(Profile, related_name='tagged_in')
 
 
 class StickyOnSticky(TrackingFields):
@@ -48,4 +48,4 @@ class StickyOnSticky(TrackingFields):
     def post_sticky(cls, top_sticky, reply_sticky):
         instance = cls(top_sticky=top_sticky, reply_sticky=reply_sticky)
         instance.save()
-        instance.reply_sticky.tags.add(ProfileDetails.objects.get(username=str(instance.top_sticky.author.username)))
+        instance.reply_sticky.tags.add(Profile.objects.get(username=str(instance.top_sticky.author.username)))

@@ -4,7 +4,10 @@ from django.contrib.auth import authenticate
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
-from .models import User, ProfileDetails, Sticky, StickyOnSticky
+from .models import User, Profile, Sticky, StickyOnSticky
+
+success_true = lambda extra: {'success': True}.update(extra)
+success_false = lambda extra, error, code: {'success': False, 'error': error, 'code': code}.update(extra)
 
 
 def _is_valid_email(email):
@@ -43,3 +46,7 @@ def sign_up_or_login(email, password):
         return user
     else:
         return None
+
+
+def get_desk(profile):
+    return [sticky.mini_json() for sticky in Sticky.objects.filter(author=user)]
