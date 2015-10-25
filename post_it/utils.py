@@ -1,14 +1,13 @@
 __author__ = 'ironeagle'
 
 from django.contrib.auth import authenticate
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
-from .models import *
+from .models import User, ProfileDetails, Sticky, StickyOnSticky
 
 
 def _is_valid_email(email):
-    from django.core.validators import validate_email
-    from django.core.exceptions import ValidationError
-
     try:
         validate_email(email)
         return True
@@ -17,18 +16,11 @@ def _is_valid_email(email):
 
 
 def sign_up_or_login(email, password):
-    # username = email
     password = password
 
     try_user = User.objects.filter(email=email)
-    if try_user.count():
-        pass
-    else:
-        new_username = email.split("@")[0]
-        stripped_username = ""
-        for element in new_username.split("."):
-            stripped_username += element
-        new_username = stripped_username
+    if not try_user:
+        new_username = "%s_%s" % ("".join(email.split("@")[0].split(".")), email.split("@")[1])
         new_email = email
         new_user = User(email=new_email, username=new_username)
         new_user.save()
@@ -41,6 +33,8 @@ def sign_up_or_login(email, password):
         except User.DoesNotExist:
             username = None
         kwargs = {'username': username, 'password': password}
+
+        # noinspection PyBroadException
         try:
             user = authenticate(**kwargs)
         except:
