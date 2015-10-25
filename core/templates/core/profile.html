@@ -1,0 +1,137 @@
+{% extends "core/base.html" %}
+{% load staticfiles%}
+{% block content %}
+
+<div class="block-header">
+    <h2>Vishesh Bangotra
+        <small>Python Developer, CoverFox</small>
+    </h2>
+</div>
+
+<div class="card" id="profile-main">
+    <div class="pm-overview c-overflow" tabindex="4" style="overflow: hidden; outline: none;">
+        <div class="pmo-pic">
+            <div class="p-relative">
+                <a href="https://in.linkedin.com/in/visheshbangotra" target="_blank">
+                    <img class="img-responsive" src="{% static 'img/profile-pics/main-dp.jpg' %}" alt="">
+                </a>
+
+                <div class="dropdown pmop-message">
+                    <a data-toggle="dropdown" href=""
+                       class="btn bgm-white btn-float z-depth-1 waves-effect waves-button waves-float">
+                        <i class="md md-message"></i>
+                    </a>
+
+                    <div class="dropdown-menu">
+                        <textarea placeholder="Send me a message...?"></textarea>
+
+                        <button class="btn bgm-green btn-icon waves-effect waves-button waves-float"><i
+                                class="md md-send"></i></button>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="pmo-stat">
+                <h2 class="m-0 c-white">475</h2>
+                Total Connections
+            </div>
+        </div>
+
+        <div class="pmo-block pmo-contact hidden-xs">
+            <h2>Contact</h2>
+
+            <ul>
+                <li><i class="md md-phone"></i> +91-9819373623</li>
+                <li><i class="md md-email"></i> visheshbangotra@gmail.com</li>
+                <li><a href="https://www.facebook.com/ferrumaquila" target="_blank"><i class="socicon socicon-facebook"></i>ferrumaquila</a>
+                </li>
+                <li>
+                    <i class="md md-location-on"></i>
+                    <address class="m-b-0">
+                        C Wing 502, Lake Bloom Society, <br>
+                        Oppo L&T Gate No 6, Powai, <br>
+                        Mumbai, Maharashtra, India
+                    </address>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="pm-body clearfix">
+        <ul class="tab-nav tn-justified" tabindex="1" style="overflow: hidden; outline: none;">
+            <li class="active waves-effect"><a href="">About</a></li>
+        </ul>
+
+
+        <div class="pmb-block">
+            <div class="pmbb-header">
+                <h2><i class="md md-equalizer m-r-5"></i> Summary</h2>
+            </div>
+            <div class="pmbb-body p-l-30">
+                <div class="pmbb-view">
+                    I'm Vishesh Bangotra, B. Tech from IIT Roorkee, working as Developer at CoverFox<br>
+                    I write code for Lead Management System for callers and currently involved in Ticket Management System<br>
+                    My expertise is backend (django, postgres, mysql) and learning KO, Bootstrap, jQuery<br>
+                    In my free time I ride bikes (long drives), play games (fps, flight sims, strategy), lose cash in poker<br>
+                    Occasionally if mood sets in I write poems and in good company play guitar, make some music<br>
+                </div>
+            </div>
+        </div>
+
+        <div class="pmb-block">
+            <div class="pmbb-header">
+                <h2><i class="md md-person m-r-5"></i> Basic Information</h2>
+            </div>
+            <div class="pmbb-body p-l-30">
+                <div class="pmbb-view">
+                    <dl class="dl-horizontal">
+                        <dt>Full Name</dt>
+                        <dd>Vishesh Bangotra</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Gender</dt>
+                        <dd>Male</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Birthday</dt>
+                        <dd>June 23, 1991</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Martial Status</dt>
+                        <dd>Single</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="pmb-block">
+            <div class="pmbb-header">
+                <h2><i class="md md-phone m-r-5"></i> Contact Information</h2>
+            </div>
+            <div class="pmbb-body p-l-30">
+                <div class="pmbb-view">
+                    <dl class="dl-horizontal">
+                        <dt>Mobile Phone</dt>
+                        <dd>+91-9819373623</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Email Address</dt>
+                        <dd>visheshbangotra@gmail.com</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Facebook</dt>
+                        <dd><a href="https://www.facebook.com/ferrumaquila/" target="_blank">ferrumaquila</a></dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>LinkedIn</dt>
+                        <dd><a href="https://in.linkedin.com/in/visheshbangotra" target="_blank">visheshbangotra</a></dd>
+                    </dl>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
