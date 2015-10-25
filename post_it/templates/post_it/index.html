@@ -1,0 +1,21 @@
+{% extends "core/base.html" %}
+{% load staticfiles %}
+{% block content %}
+<div class="card" id="">
+    <div class="pm-body clearfix">
+        <ul class="tab-nav tn-justified" tabindex="1" style="overflow: hidden; outline: none;" id="index_tabs">
+            <li class="active waves-effect"><a href="#home" data-toggle="tab">Home</a></li>
+            <li class="waves-effect"><a href="#desk" data-toggle="tab">Desk</a></li>
+            <li class="waves-effect"><a href="#profile" data-toggle="tab">Profile</a></li>
+        </ul>
+    </div>
+    <div class="card" id="container">
+        <h1 class="text-center">If you eliminate JS then all that remains, however ugly, is HTML</h1>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+
+    })
+</script>
+{% endblock %}
