@@ -80,7 +80,7 @@ def fav_sticky(request, sticky_id):
     return JsonResponse(success_false({}, 'API under construction', 'api_not_done'))
 
 
-@login_required
-def home(request):
+# @login_required
+def index(request):
     return render(request, "post_it/index.html", {})
 

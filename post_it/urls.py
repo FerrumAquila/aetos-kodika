@@ -16,6 +16,6 @@ urlpatterns = [
     url(r'^sticky/fav/(?P<sticky_id>\w+)/$', app_views.fav_sticky, name='pt_fav_sticky'),
 
     # html view urls
-    url(r'^home/$', app_views.home, name='pt_home'),
-    url(r'^$', app_views.home, name='pt_home'),
+    url(r'^home/$', app_views.index, name='pt_home'),
+    url(r'^$', app_views.index, name='pt_home'),
 ]

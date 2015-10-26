@@ -1,21 +1,33 @@
 {% extends "core/base.html" %}
 {% load staticfiles %}
 {% block content %}
-<div class="card" id="">
-    <div class="pm-body clearfix">
-        <ul class="tab-nav tn-justified" tabindex="1" style="overflow: hidden; outline: none;" id="index_tabs">
-            <li class="active waves-effect"><a href="#home" data-toggle="tab">Home</a></li>
-            <li class="waves-effect"><a href="#desk" data-toggle="tab">Desk</a></li>
-            <li class="waves-effect"><a href="#profile" data-toggle="tab">Profile</a></li>
+<div class="card">
+    <div role="tabpanel">
+        <ul class="tab-nav tn-justified" role="tablist" tabindex="1" style="overflow: hidden; outline: none;">
+            <li class="active"><a href="#homePaneCard" aria-controls="homeTopBtn" role="tab" data-toggle="tab"
+                                  aria-expanded="true">Home</a>
+            </li>
+            <li class=""><a href="#deskPaneCard" aria-controls="deskTopBtn" role="tab" data-toggle="tab"
+                            aria-expanded="false">Desk</a>
+            </li>
+            <li class=""><a href="#profilePaneCard" aria-controls="profileTopBtn" role="tab" data-toggle="tab"
+                            aria-expanded="false">Profile</a>
+            </li>
         </ul>
-    </div>
-    <div class="card" id="container">
-        <h1 class="text-center">If you eliminate JS then all that remains, however ugly, is HTML</h1>
+        <div class="tab-content p-t-0">
+            <div role="tabpanel" class="tab-pane active" id="homePaneCard">
+                <div class="card">
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="deskPaneCard">
+                <div class="card">
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="PaneCard">
+                <div class="card">
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-<script>
-    $(document).ready(function(){
-
-    })
-</script>
 {% endblock %}
