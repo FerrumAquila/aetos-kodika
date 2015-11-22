@@ -1,42 +1,73 @@
-{% extends "core/base.html" %}
+{% extends 'core/base.html' %}
 {% load staticfiles %}
 {% block content %}
-<div class="card">
-    <div role="tabpanel">
-        <ul class="tab-nav tn-justified" role="tablist" tabindex="1" style="overflow: hidden; outline: none;">
-            <li class="active"><a href="#homePaneCard" aria-controls="homeTopBtn" role="tab" data-toggle="tab"
-                                  aria-expanded="true">Home</a>
+<div class='card'>
+    <div role='tabpanel'>
+        <ul class='tab-nav tn-justified' role='tablist' tabindex='1' style='overflow: hidden; outline: none;'>
+            <li class='active'><a href='#homePaneCard' aria-controls='homeTopBtn' role='tab' data-toggle='tab'
+                                  aria-expanded='true'>Home</a>
             </li>
-            <li class=""><a href="#deskPaneCard" aria-controls="deskTopBtn" role="tab" data-toggle="tab"
-                            aria-expanded="false">Desk</a>
+            <li class=''><a href='#deskPaneCard' aria-controls='deskTopBtn' role='tab' data-toggle='tab'
+                            aria-expanded='false'>Desk</a>
             </li>
-            <li class=""><a href="#profilePaneCard" aria-controls="profileTopBtn" role="tab" data-toggle="tab"
-                            aria-expanded="false">Profile</a>
+            <li class=''><a href='#profilePaneCard' aria-controls='profileTopBtn' role='tab' data-toggle='tab'
+                            aria-expanded='false'>Profile</a>
             </li>
         </ul>
-        <div class="tab-content p-t-0">
-            <div role="tabpanel" class="tab-pane active" id="homePaneCard">
-                <div class="card">
-                    <p>Home Card</p>
-                    {% for design in sig_designs %}
-                    <div>
-                        {{ design.html|safe }}
-                    </div>
-                    <div class="clearfix"></div>
-                    {% endfor %}
+        <div class='tab-content p-t-0'>
+            <div role='tabpanel' class='tab-pane active' id='homePaneCard'>
+                <div class='card'>
+                    <form id='fetchSignatureForm' action='{% url "sm_api_get_sig_html" sig_design.id %}' method='POST'>
+                        {% csrf_token %}
+                        {% for component in sig_form %}
+                        <div class='form-group fg-float'>
+                            <div class='fg-line'>
+                                <input type='text' name='{{ component.id_for_label }}'
+                                       class='input-lg form-control fg-input'>
+                            </div>
+                            <label class='fg-label'>{{ component.label_tag }}</label>
+                        </div>
+                        {% endfor %}
+                    </form>
+                    <button id='fetchSignatureBtn' class='btn btn-primary'>Fetch Signature</button>
+                    <div id='signatureContainer'></div>
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane" id="deskPaneCard">
-                <div class="card">
+            <div role='tabpanel' class='tab-pane' id='deskPaneCard'>
+                <div class='card'>
                     <p>Desk Card</p>
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane" id="profilePaneCard">
-                <div class="card">
+            <div role='tabpanel' class='tab-pane' id='profilePaneCard'>
+                <div class='card'>
                     <p>Profile Card</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block footer %}
+<script>
+function get_signature_html(){
+    //$('#fetchSignatureBtn').hide()
+    fetchSignatureForm = $("#fetchSignatureForm").serialize()
+    url = '{% url "sm_api_get_sig_html" sig_design.id %}'
+    $.post(url=url, fetchSignatureForm, function(data){
+        responseData = data
+        //$('#fetchSignatureBtn').show()
+        if(responseData.success){
+            console.log(responseData.html)
+            $('#signatureContainer').html(responseData.html)
+        }
+    })
+}
+$(document).ready(function(){
+    $('#fetchSignatureBtn').click(function(){
+        get_signature_html();
+    });
+});
+
+</script>
 {% endblock %}
