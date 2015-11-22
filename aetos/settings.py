@@ -126,6 +126,7 @@ INSTALLED_APPS = (
 
     'core',
     'post_it',
+    'signature_maker',
 )
 
 # A sample logging configuration. The only tangible logging

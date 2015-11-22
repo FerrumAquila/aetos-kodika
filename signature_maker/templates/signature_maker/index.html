@@ -1,0 +1,42 @@
+{% extends "core/base.html" %}
+{% load staticfiles %}
+{% block content %}
+<div class="card">
+    <div role="tabpanel">
+        <ul class="tab-nav tn-justified" role="tablist" tabindex="1" style="overflow: hidden; outline: none;">
+            <li class="active"><a href="#homePaneCard" aria-controls="homeTopBtn" role="tab" data-toggle="tab"
+                                  aria-expanded="true">Home</a>
+            </li>
+            <li class=""><a href="#deskPaneCard" aria-controls="deskTopBtn" role="tab" data-toggle="tab"
+                            aria-expanded="false">Desk</a>
+            </li>
+            <li class=""><a href="#profilePaneCard" aria-controls="profileTopBtn" role="tab" data-toggle="tab"
+                            aria-expanded="false">Profile</a>
+            </li>
+        </ul>
+        <div class="tab-content p-t-0">
+            <div role="tabpanel" class="tab-pane active" id="homePaneCard">
+                <div class="card">
+                    <p>Home Card</p>
+                    {% for design in sig_designs %}
+                    <div>
+                        {{ design.html|safe }}
+                    </div>
+                    <div class="clearfix"></div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="deskPaneCard">
+                <div class="card">
+                    <p>Desk Card</p>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="profilePaneCard">
+                <div class="card">
+                    <p>Profile Card</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
