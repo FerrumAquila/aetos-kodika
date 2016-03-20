@@ -1,6 +1,11 @@
+# coding=utf-8
+from django.contrib.auth.decorators import user_passes_test
+
 __author__ = 'ironeagle'
 
 import math
+
+from . import models as abs_models
 
 
 # TODO: make general matrix class and use that as parent for SectorMap
@@ -52,3 +57,34 @@ class SectorMap(object):
 
     def get_map_json(self):
         return {'%s__%s' % (x, y): self.data[x][y] for x, row in enumerate(self.data) for y, r in enumerate(row)}
+
+
+def abs_profile_required(view_func):
+    def test_func(user):
+        try:
+            user.abs_profile
+        except abs_models.UserProfile.DoesNotExist:
+            return False
+        else:
+            return True
+    return user_passes_test(test_func=test_func)(view_func)
+
+
+def get_or_create_challenge(challenger, challengee, match_id):
+    return abs_models.Challenge.objects.get_or_create(
+        challenger=challenger, challengee=challengee, match=match_id
+    )
+
+
+def accept_challenge(challenge_id):
+    challenge = abs_models.Challenge.objects.get(id=challenge_id)
+    challenge.state = abs_models.Challenge.ACCEPTED
+    challenge.save(update_fields=['state'])
+    return challenge
+
+
+def decline_challenge(challenge_id):
+    challenge = abs_models.Challenge.objects.get(id=challenge_id)
+    challenge.state = abs_models.Challenge.DECLINED
+    challenge.save(update_fields=['state'])
+    return challenge

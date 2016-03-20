@@ -68,3 +68,26 @@ class Match(models.Model):
     @cached_property
     def winner(self):
         pass
+
+
+class Challenge(models.Model):
+    """
+    """
+    ACCEPTED = 'accepted'
+    DECLINED = 'declined'
+    PENDING = 'pending'
+    STATE_CHOICES = (
+        (ACCEPTED, 'Accepted'),
+        (DECLINED, 'Declined'),
+        (PENDING, 'Pending'),
+    )
+    challenger = models.ForeignKey(UserProfile, related_name="challenges")
+    challengee = models.ForeignKey(UserProfile, related_name="challenged")
+    match = models.ForeignKey(Match)
+    state = models.CharField(max_length=20, default=PENDING,
+                             choices=STATE_CHOICES)
+
+    def __unicode__(self):
+        return '{} \m/ {} | {}'.format(
+            self.challenger, self.challengee, self.state
+        )
