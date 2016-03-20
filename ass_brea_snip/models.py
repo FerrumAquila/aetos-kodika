@@ -10,7 +10,7 @@ class Soldier(models.Model):
     Basic soldier model which stores the name and relates inferiors
     """
     loadout = models.CharField(max_length=60)
-    can_kill = models.ManyToManyField('self', related_name="killed_by")
+    can_kill = models.ManyToManyField('Soldier', related_name="killed_by")
 
 
 class UserProfile(models.Model):
