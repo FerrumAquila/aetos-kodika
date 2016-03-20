@@ -3,6 +3,7 @@ __author__ = 'ironeagle'
 import math
 
 
+# TODO: make general matrix class and use that as parent for SectorMap
 class SectorMap(object):
     """
     Test
