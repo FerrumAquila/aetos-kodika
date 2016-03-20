@@ -1,4 +1,6 @@
 # coding=utf-8
+from __future__ import unicode_literals
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.postgres import fields as postgres_fields
@@ -12,10 +14,16 @@ class Soldier(models.Model):
     loadout = models.CharField(max_length=60)
     can_kill = models.ManyToManyField('Soldier', related_name="killed_by")
 
+    def __unicode__(self):
+        return self.loadout
+
 
 class UserProfile(models.Model):
     gamer_tag = models.CharField(max_length=255)
     user = models.OneToOneField(User, related_name="abs_profile")
+
+    def __unicode__(self):
+        return self.gamer_tag
 
 
 class SoldierLevel(models.Model):
@@ -28,6 +36,9 @@ class SoldierLevel(models.Model):
 
     class Meta(object):
         unique_together = ('soldier', 'user_profile')
+
+    def __unicode__(self):
+        return '|'.join((self.user_profile, self.soldier, self.level))
 
 
 class Strategy(models.Model):
