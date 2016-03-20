@@ -51,8 +51,8 @@ class Match(models.Model):
     """
     If you need docstring for this model, better kill yourself
     """
-    hitmen = models.ForeignKey(Strategy, related_name="hitmen_matches")
-    blackbriar = models.ForeignKey(Strategy, related_name="blackbriar_matches")
+    hitmen = models.ForeignKey(Strategy, related_name="hitmen_matches", null=True)
+    blackbriar = models.ForeignKey(Strategy, related_name="blackbriar_matches", null=True)
 
     @cached_property
     def winner(self):
