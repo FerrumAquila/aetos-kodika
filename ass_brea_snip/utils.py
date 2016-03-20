@@ -5,22 +5,46 @@ __author__ = 'ironeagle'
 
 import math
 
-from . import models as abs_models
+from . import models as app_models
+from collections import Counter
 
 
 # TODO: make general matrix class and use that as parent for SectorMap
 class SectorMap(object):
     """
-    Test
-
+    import ass_brea_snip.utils as abs_utils
     data = [[0,1,0], [1,0,0], [0,0,1]]
-    sector_map = ass_utils.SectorMap(data)
+    sector_map = abs_utils.SectorMap(data)
     old_map = sector_map.get_map_json()
-    new_sector_map = ass_utils.SectorMap(old_map)
+    new_sector_map = abs_utils.SectorMap(old_map)
     if new_sector_map.get_map_json() == old_map:
-        print 'great success!!!!'
+        print 'great success!!!'
     else:
         print 'great success!!!......not'
+
+    grid_map_1 = {
+        '0__0': 2,
+        '0__1': 1,
+        '0__2': 2,
+        '1__0': 1,
+        '1__1': 2,
+        '1__2': 2,
+        '2__0': 2,
+        '2__1': 2,
+        '2__2': 1
+    }
+
+    grid_map_2 = {
+        '0__0': 1,
+        '0__1': 2,
+        '0__2': 1,
+        '1__0': 2,
+        '1__1': 1,
+        '1__2': 1,
+        '2__0': 1,
+        '2__1': 1,
+        '2__2': 2
+    }
     """
 
     def __init__(self, data=None):
@@ -55,6 +79,7 @@ class SectorMap(object):
         self.check_co_ordinates(x, y)
         self.data[x][y] = value
 
+    @property
     def get_map_json(self):
         return {'%s__%s' % (x, y): self.data[x][y] for x, row in enumerate(self.data) for y, r in enumerate(row)}
 
@@ -63,7 +88,7 @@ def abs_profile_required(view_func):
     def test_func(user):
         try:
             user.abs_profile
-        except abs_models.UserProfile.DoesNotExist:
+        except app_models.UserProfile.DoesNotExist:
             return False
         else:
             return True
@@ -71,20 +96,50 @@ def abs_profile_required(view_func):
 
 
 def get_or_create_challenge(challenger, challengee, match_id):
-    return abs_models.Challenge.objects.get_or_create(
+    return app_models.Challenge.objects.get_or_create(
         challenger=challenger, challengee=challengee, match=match_id
     )
 
 
 def accept_challenge(challenge_id):
-    challenge = abs_models.Challenge.objects.get(id=challenge_id)
-    challenge.state = abs_models.Challenge.ACCEPTED
+    challenge = app_models.Challenge.objects.get(id=challenge_id)
+    challenge.state = app_models.Challenge.ACCEPTED
     challenge.save(update_fields=['state'])
     return challenge
 
 
 def decline_challenge(challenge_id):
-    challenge = abs_models.Challenge.objects.get(id=challenge_id)
-    challenge.state = abs_models.Challenge.DECLINED
+    challenge = app_models.Challenge.objects.get(id=challenge_id)
+    challenge.state = app_models.Challenge.DECLINED
     challenge.save(update_fields=['state'])
     return challenge
+
+
+def make_war(hitmen_tag, blackbrair_tag, hitmen_map, blackbrair_map):
+    hitmen_strategy = make_strategy(hitmen_tag, hitmen_map)
+    blackbrair_strategy = make_strategy(blackbrair_tag, blackbrair_map)
+    war_stats = skirmish_results(hitmen_strategy, blackbrair_strategy)
+    winner = determine_winner(war_stats)
+    return winner
+
+
+def make_strategy(gamer_tag, strategy_map):
+    gamer = app_models.UserProfile.objects.get(gamer_tag=gamer_tag)
+    strategy = app_models.Strategy(player=gamer, grid=strategy_map)
+    strategy.save()
+    return strategy
+
+
+def skirmish_results(hitmen_strategy, blackbrair_strategy):
+    survivor = lambda hitmen, blackbrair: hitmen_strategy.player if blackbrair in hitmen.can_kill.all()\
+        else blackbrair_strategy.player
+    soldier = lambda pk: app_models.Soldier.objects.get(pk=pk)
+    shootout = [
+        survivor(soldier(hitmen), soldier(blackbrair)) for (hitmen_pos, hitmen), (blackbrair_pos, blackbrair) in zip(
+            hitmen_strategy.grid.items(), blackbrair_strategy.grid.items())
+    ]
+    return Counter(shootout)
+
+
+def determine_winner(war_stats):
+    return max(war_stats.iterkeys(), key=lambda k: war_stats[k])

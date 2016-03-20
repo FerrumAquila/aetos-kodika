@@ -38,7 +38,7 @@ class SoldierLevel(models.Model):
         unique_together = ('soldier', 'user_profile')
 
     def __unicode__(self):
-        return '|'.join((self.user_profile, self.soldier, self.level))
+        return '|'.join((self.user_profile.gamer_tag, self.soldier.loadout, str(self.level)))
 
 
 class Strategy(models.Model):
@@ -54,7 +54,7 @@ class Strategy(models.Model):
     def save(self, *args, **kwargs):
         first = not bool(self.pk)
         if first:
-            self.salt = {sl.soldier.id: sl.level for sl in self.player.soldiers}
+            self.salt = {str(sl.soldier.id): str(sl.level) for sl in self.player.soldiers.all()}
         super(Strategy, self).save(*args, **kwargs)
 
 
