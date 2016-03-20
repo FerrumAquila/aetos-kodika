@@ -115,16 +115,15 @@ def decline_challenge(challenge_id):
     return challenge
 
 
-def make_war(hitmen_tag, blackbrair_tag, hitmen_map, blackbrair_map):
-    hitmen_strategy = make_strategy(hitmen_tag, hitmen_map)
-    blackbrair_strategy = make_strategy(blackbrair_tag, blackbrair_map)
+def make_war(hitmen, blackbrair, hitmen_map, blackbrair_map):
+    hitmen_strategy = make_strategy(hitmen, hitmen_map)
+    blackbrair_strategy = make_strategy(blackbrair, blackbrair_map)
     war_stats = skirmish_results(hitmen_strategy, blackbrair_strategy)
     winner = determine_winner(war_stats)
     return winner
 
 
-def make_strategy(gamer_tag, strategy_map):
-    gamer = app_models.UserProfile.objects.get(gamer_tag=gamer_tag)
+def make_strategy(gamer, strategy_map):
     strategy = app_models.Strategy(player=gamer, grid=strategy_map)
     strategy.save()
     return strategy
