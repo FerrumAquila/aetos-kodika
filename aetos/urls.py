@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'', include('core.urls')),
     url(r'^post_it/', include('post_it.urls')),
     url(r'^signature_maker/', include('signature_maker.urls')),
+    url(r'^assault_breacher_sniper/', include('ass_brea_snip.urls')),
     url(r'^accounts/login/$', login),
     url(r'^accounts/logout/$', logout, {'next_page': '/'}),
 ] + static(

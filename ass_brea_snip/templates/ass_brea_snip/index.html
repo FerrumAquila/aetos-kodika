@@ -1,0 +1,28 @@
+{% extends "core/base.html" %}
+{% load staticfiles %}
+{% block content %}
+<div class="card">
+    <div role="tabpanel">
+        <ul class="tab-nav tn-justified" role="tablist" tabindex="1" style="overflow: hidden; outline: none;">
+            <li class="active"><a href="#homePaneCard" aria-controls="homeTopBtn" role="tab" data-toggle="tab"
+                                  aria-expanded="true">Home</a>
+            </li>
+            <li class=""><a href="#warRoomPaneCard" aria-controls="warRoomTopBtn" role="tab" data-toggle="tab"
+                            aria-expanded="false">War Room</a>
+            </li>
+        </ul>
+        <div class="tab-content p-t-0">
+            <div role="tabpanel" class="tab-pane active" id="homePaneCard">
+                <div class="card">
+                    <p>Home Card</p>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="warRoomPaneCard">
+                <div class="card">
+                    <p>War Room Card</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
