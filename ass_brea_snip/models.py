@@ -66,8 +66,10 @@ class Match(models.Model):
     blackbriar = models.ForeignKey(Strategy, related_name="blackbriar_matches", null=True)
 
     @cached_property
-    def winner(self):
-        pass
+    def match_results(self):
+        from . import utils as app_utils
+        match_stats = app_utils.skirmish_results(self.hitmen, self.blackbriar)
+        return {'match_stats': match_stats, 'match_winner': app_utils.determine_winner(match_stats)}
 
 
 class Challenge(models.Model):
@@ -76,10 +78,12 @@ class Challenge(models.Model):
     ACCEPTED = 'accepted'
     DECLINED = 'declined'
     PENDING = 'pending'
+    COMPLETED = 'completed'
     STATE_CHOICES = (
         (ACCEPTED, 'Accepted'),
         (DECLINED, 'Declined'),
         (PENDING, 'Pending'),
+        (COMPLETED, 'Completed'),
     )
     challenger = models.ForeignKey(UserProfile, related_name="challenges")
     challengee = models.ForeignKey(UserProfile, related_name="challenged")

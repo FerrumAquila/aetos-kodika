@@ -97,7 +97,7 @@ def abs_profile_required(view_func):
 
 def get_or_create_challenge(challenger, challengee, match_id):
     return app_models.Challenge.objects.get_or_create(
-        challenger=challenger, challengee=challengee, match=match_id
+        challenger=challenger, challengee=challengee, match_id=match_id
     )
 
 
@@ -115,12 +115,27 @@ def decline_challenge(challenge_id):
     return challenge
 
 
-def make_war(hitmen, blackbrair, hitmen_map, blackbrair_map):
-    hitmen_strategy = make_strategy(hitmen, hitmen_map)
-    blackbrair_strategy = make_strategy(blackbrair, blackbrair_map)
-    war_stats = skirmish_results(hitmen_strategy, blackbrair_strategy)
-    winner = determine_winner(war_stats)
+def fight_challenge(challenge_id, challengee_map):
+    challenge = app_models.Challenge.objects.get(id=challenge_id, status=app_models.Challenge.ACCEPTED)
+    challenge.state = app_models.Challenge.COMPLETED
+    challenge_match = challenge.match
+    challengee_strategy = make_strategy(challenge.challengee, challengee_map)
+    challenge_match.blackbriar = challengee_strategy
+    challenge_match.save()
+    challenge.save(update_fields=['state'])
+    return challenge
+
+
+def determine_challenge_winner(challenge_id):
+    challenge = app_models.Challenge.objects.get(id=challenge_id, status=app_models.Challenge.COMPLETED)
+    winner = challenge.match.winner
     return winner
+
+
+def match_results(match):
+    war_stats = skirmish_results(match.hitmen, match.blackbriar)
+    winner = determine_winner(war_stats)
+    return war_stats, winner
 
 
 def make_strategy(gamer, strategy_map):
@@ -129,13 +144,13 @@ def make_strategy(gamer, strategy_map):
     return strategy
 
 
-def skirmish_results(hitmen_strategy, blackbrair_strategy):
-    survivor = lambda hitmen, blackbrair: hitmen_strategy.player if blackbrair in hitmen.can_kill.all()\
-        else blackbrair_strategy.player
+def skirmish_results(hitmen_strategy, blackbriar_strategy):
+    survivor = lambda hitmen, blackbriar: hitmen_strategy.player if blackbriar in hitmen.can_kill.all()\
+        else blackbriar_strategy.player
     soldier = lambda pk: app_models.Soldier.objects.get(pk=pk)
     shootout = [
-        survivor(soldier(hitmen), soldier(blackbrair)) for (hitmen_pos, hitmen), (blackbrair_pos, blackbrair) in zip(
-            hitmen_strategy.grid.items(), blackbrair_strategy.grid.items())
+        survivor(soldier(hitmen), soldier(blackbriar)) for (hitmen_pos, hitmen), (blackbriar_pos, blackbriar) in zip(
+            hitmen_strategy.grid.items(), blackbriar_strategy.grid.items())
     ]
     return Counter(shootout)
 
