@@ -1,4 +1,5 @@
 # coding=utf-8
+import json
 from . import forms as abs_forms
 from . import utils as abs_utils
 from . import models as abs_models
@@ -11,7 +12,7 @@ from django.http import JsonResponse
 
 # @login_required
 def index(request):
-    return render(request, "ass_brea_snip/index.html", {})
+    return render(request, "ass_brea_snip/index.html", {'id_icon_map': json.dumps(abs_models.Soldier.objects.id_icon_map())})
 
 
 # @login_required

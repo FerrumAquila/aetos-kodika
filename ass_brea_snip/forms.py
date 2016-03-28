@@ -1,4 +1,6 @@
 __author__ = 'ironeagle'
+import json
+
 from . import models as abs_models
 from . import utils as abs_utils
 
@@ -11,9 +13,10 @@ class ChallengePlayer(forms.Form):
     def __init__(self, request, blackbrair):
         super(ChallengePlayer, self).__init__()
         self.request = request
-        hitmen = self.request.POST['hitmen_gamer_tag']
-        # hitmen_strategy_grid = self.request.POST['hitmen_strategy_grid']
-        hitmen_strategy_grid = {
+        post_data = json.loads(self.request.POST['post_data'])
+        hitmen = post_data['hitmen_gamer_tag']
+        hitmen_strategy_grid = post_data['hitmen_strategy_grid']
+        """hitmen_strategy_grid = {
             '0__0': 2,
             '0__1': 1,
             '0__2': 2,
@@ -23,7 +26,7 @@ class ChallengePlayer(forms.Form):
             '2__0': 2,
             '2__1': 2,
             '2__2': 1
-        }
+        }"""
         self.hitmen = abs_models.UserProfile.objects.get(user=self.request.user, gamer_tag=hitmen)
         self.blackbrair = abs_models.UserProfile.objects.get(gamer_tag=blackbrair)
         self.hitmen_strategy = abs_utils.make_strategy(self.hitmen, hitmen_strategy_grid)
@@ -41,8 +44,9 @@ class FightChallenge(forms.Form):
     def __init__(self, request, challenge_id):
         super(FightChallenge, self).__init__()
         self.request = request
-        # blackbrair_strategy_grid = self.request.POST['blackbrair_strategy_grid']
-        blackbrair_strategy_grid = {
+        post_data = json.loads(self.request.POST['post_data'])
+        blackbrair_strategy_grid = post_data['blackbrair_strategy_grid']
+        """blackbrair_strategy_grid = {
             '0__0': 1,
             '0__1': 2,
             '0__2': 1,
@@ -52,7 +56,7 @@ class FightChallenge(forms.Form):
             '2__0': 1,
             '2__1': 1,
             '2__2': 2
-        }
+        }"""
         self.challenge = abs_models.Challenge.objects.get(pk=challenge_id)
         self.hitmen = self.challenge.challenger
         self.blackbrair = self.challenge.challengee

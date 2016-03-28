@@ -1,0 +1,18 @@
+<div class="table-responsive" tabindex="2" style="overflow: hidden; outline: none;">
+    <table id="gridTable" class="table table-bordered">
+        <tbody>
+            {% for x in '123' %}
+            <tr>
+                {% for y in '123' %}
+                <td class="gridTabBtn" id="{{ x }}__{{ y }}">
+                    <button class="btn btn-danger waves-effect waves-button waves-float">
+                        <i id="gridIcon{{ x }}__{{ y }}" class=""></i><span id="gridLoadout{{ x }}__{{ y }}"></span>
+                    </button>
+                    <input name="gridInput{{ x }}__{{ y }}" id="gridInput{{ x }}__{{ y }}" value="0" type="hidden">
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

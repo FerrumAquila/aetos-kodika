@@ -7,12 +7,20 @@ from django.contrib.postgres import fields as postgres_fields
 from django.utils.functional import cached_property
 
 
+class SoldierManager(models.Manager):
+    def id_icon_map(self):
+        return {i: {'pk': soldier.id, 'icon_class': soldier.bio['icon_class'], 'loadout': soldier.loadout}
+                for i, soldier in enumerate(Soldier.objects.all().order_by('id'))}
+
+
 class Soldier(models.Model):
     """
     Basic soldier model which stores the name and relates inferiors
     """
     loadout = models.CharField(max_length=60)
     can_kill = models.ManyToManyField('Soldier', related_name="killed_by")
+    bio = postgres_fields.JSONField()
+    objects = SoldierManager()
 
     def __unicode__(self):
         return self.loadout
