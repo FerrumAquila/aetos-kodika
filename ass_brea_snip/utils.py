@@ -116,7 +116,7 @@ def decline_challenge(challenge_id):
 
 
 def fight_challenge(challenge_id, challengee_map):
-    challenge = app_models.Challenge.objects.get(id=challenge_id, status=app_models.Challenge.ACCEPTED)
+    challenge = app_models.Challenge.objects.get(id=challenge_id, state=app_models.Challenge.ACCEPTED)
     challenge.state = app_models.Challenge.COMPLETED
     challenge_match = challenge.match
     challengee_strategy = make_strategy(challenge.challengee, challengee_map)
@@ -127,7 +127,7 @@ def fight_challenge(challenge_id, challengee_map):
 
 
 def determine_challenge_winner(challenge_id):
-    challenge = app_models.Challenge.objects.get(id=challenge_id, status=app_models.Challenge.COMPLETED)
+    challenge = app_models.Challenge.objects.get(id=challenge_id, state=app_models.Challenge.COMPLETED)
     winner = challenge.match.winner
     return winner
 

@@ -7,9 +7,6 @@ from aetos.project_utils import utils as aetos_utils
 
 
 class ChallengePlayer(forms.Form):
-    hitmen = forms.CharField(max_length=255)
-    blackbrair = forms.CharField(max_length=255)
-    hitmen_grid = forms.CharField(max_length=2048)
 
     def __init__(self, request, blackbrair):
         super(ChallengePlayer, self).__init__()
@@ -36,5 +33,35 @@ class ChallengePlayer(forms.Form):
 
     def save(self):
         response = aetos_utils.success_true({'challenge_id': self.challenge.id})
+        return response
+
+
+class FightChallenge(forms.Form):
+
+    def __init__(self, request, challenge_id):
+        super(FightChallenge, self).__init__()
+        self.request = request
+        # blackbrair_strategy_grid = self.request.POST['blackbrair_strategy_grid']
+        blackbrair_strategy_grid = {
+            '0__0': 1,
+            '0__1': 2,
+            '0__2': 1,
+            '1__0': 2,
+            '1__1': 1,
+            '1__2': 1,
+            '2__0': 1,
+            '2__1': 1,
+            '2__2': 2
+        }
+        self.challenge = abs_models.Challenge.objects.get(pk=challenge_id)
+        self.hitmen = self.challenge.challenger
+        self.blackbrair = self.challenge.challengee
+        self.blackbrair_strategy = abs_utils.make_strategy(self.blackbrair, blackbrair_strategy_grid)
+
+    def save(self):
+        abs_utils.accept_challenge(self.challenge.id)
+        abs_utils.fight_challenge(self.challenge.id, self.blackbrair_strategy.grid)
+        score, winner = abs_utils.match_results(self.challenge.match)
+        response = aetos_utils.success_true({'score': {key.gamer_tag: value for key, value in score.items()}, 'winner': winner.gamer_tag})
         return response
 

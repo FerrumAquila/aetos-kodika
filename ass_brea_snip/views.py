@@ -16,3 +16,10 @@ def index(request):
 def challenge_player(request, blackbrair):
     challenge_form = abs_forms.ChallengePlayer(request=request, blackbrair=blackbrair)
     return JsonResponse(challenge_form.save())
+
+
+# @login_required
+@csrf_exempt
+def fight_challenge(request, challenge_id):
+    challenge_form = abs_forms.FightChallenge(request=request, challenge_id=challenge_id)
+    return JsonResponse(challenge_form.save())
