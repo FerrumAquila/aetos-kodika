@@ -66,10 +66,10 @@ class Match(models.Model):
     blackbriar = models.ForeignKey(Strategy, related_name="blackbriar_matches", null=True)
 
     @cached_property
-    def match_results(self):
+    def results(self):
         from . import utils as app_utils
         match_stats = app_utils.skirmish_results(self.hitmen, self.blackbriar)
-        return {'match_stats': match_stats, 'match_winner': app_utils.determine_winner(match_stats)}
+        return {'stats': match_stats, 'winner': app_utils.determine_winner(match_stats)}
 
 
 class Challenge(models.Model):
