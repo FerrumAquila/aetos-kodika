@@ -61,8 +61,7 @@ class FightChallenge(forms.Form):
     def save(self):
         abs_utils.accept_challenge(self.challenge.id)
         abs_utils.fight_challenge(self.challenge.id, self.blackbrair_strategy.grid)
-        results = self.challenge.match.results
-        response = aetos_utils.success_true({'score': {key.gamer_tag: value for key, value in results['stats'].items()},
-                                             'winner': results['winner'].gamer_tag})
+        result = self.challenge.match.result
+        response = aetos_utils.success_true(abs_utils.json_match_result(result))
         return response
 

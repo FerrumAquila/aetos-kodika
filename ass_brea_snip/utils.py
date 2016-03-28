@@ -8,6 +8,9 @@ import math
 from . import models as app_models
 from collections import Counter
 
+json_match_result = lambda result: {'score': {key.gamer_tag: value for key, value in result['stats'].items()},
+                                    'winner': result['winner'].gamer_tag}
+
 
 # TODO: make general matrix class and use that as parent for SectorMap
 class SectorMap(object):
@@ -132,8 +135,8 @@ def determine_challenge_winner(challenge_id):
     return winner
 
 
-def match_results(match):
-    war_stats = skirmish_results(match.hitmen, match.blackbriar)
+def match_result(match):
+    war_stats = skirmish_result(match.hitmen, match.blackbriar)
     winner = determine_winner(war_stats)
     return war_stats, winner
 
@@ -144,7 +147,7 @@ def make_strategy(gamer, strategy_map):
     return strategy
 
 
-def skirmish_results(hitmen_strategy, blackbriar_strategy):
+def skirmish_result(hitmen_strategy, blackbriar_strategy):
     survivor = lambda hitmen, blackbriar: hitmen_strategy.player if blackbriar in hitmen.can_kill.all()\
         else blackbriar_strategy.player
     soldier = lambda pk: app_models.Soldier.objects.get(pk=pk)
