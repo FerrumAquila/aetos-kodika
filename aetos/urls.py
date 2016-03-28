@@ -8,6 +8,7 @@ admin.autodiscover()
 
 urlpatterns = [
     url(r'', include('core.urls')),
+    url(r'^admin/', include(admin.site.urls)),
     url(r'^post_it/', include('post_it.urls')),
     url(r'^signature_maker/', include('signature_maker.urls')),
     url(r'^assault_breacher_sniper/', include('ass_brea_snip.urls')),

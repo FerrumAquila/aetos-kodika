@@ -9,4 +9,5 @@ urlpatterns = [
 
     # html view urls
     url(r'^home/$', app_views.index, name='abs_home'),
+    url(r'^challenge/(?P<blackbrair>[\w-]+)/$', app_views.challenge_player, name='abs_challenge_player'),
 ]
