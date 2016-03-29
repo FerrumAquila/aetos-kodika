@@ -103,3 +103,16 @@ class Challenge(models.Model):
         return '{} \m/ {} | {}'.format(
             self.challenger, self.challengee, self.state
         )
+
+    @property
+    def mini_json(self):
+        json_data = {
+            'id': self.id,
+            'blackbriar': self.challengee.gamer_tag,
+            'state': self.state,
+            'hitmen': self.challenger.gamer_tag,
+            'hitmen_grid': self.match.hitmen.grid,
+        }
+        if self.state == Challenge.ACCEPTED:
+            json_data.update({'blackbriar_grid': self.match.blackbriar.grid})
+        return json_data

@@ -164,3 +164,7 @@ def determine_winner(war_stats):
 
 def get_active_user_profile(request):
     return request.user.abs_profile
+
+
+def open_challenge_list(gamer_tag):
+    return abs_models.Challenge.objects.filter(challengee__gamer_tag=gamer_tag)

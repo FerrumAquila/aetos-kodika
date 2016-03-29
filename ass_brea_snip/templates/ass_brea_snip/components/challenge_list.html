@@ -1,0 +1,32 @@
+<div class="table-responsive" tabindex="2" style="overflow: hidden; outline: none;">
+    <table id="gridTable" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>
+                    Challenge ID
+                </th>
+                <th>
+                    Challenger
+                </th>
+                <th>
+                    State
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for challenge in challenges %}
+            <tr>
+                <td>
+                    {{challenge.id}}
+                </td>
+                <td>
+                    {{challenge.hitmen}}
+                </td>
+                <td>
+                    {{challenge.state}}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

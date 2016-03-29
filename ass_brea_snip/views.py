@@ -10,19 +10,22 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 
 
+# TODO: get_active_user_profile should be added to request
 # @login_required
 def index(request):
+    challenges = [challenge.mini_json for challenge in abs_utils.open_challenge_list(abs_utils.get_active_user_profile(request))]
     return render(request, "ass_brea_snip/index.html", {
         'hitmen_profile': abs_utils.get_active_user_profile(request),
         'id_icon_map': json.dumps(abs_models.Soldier.objects.id_icon_map()),
+        'challenges': challenges,
         'gamer_profiles': abs_models.UserProfile.objects.all().exclude(user=request.user),
     })
 
 
 # @login_required
 @csrf_exempt
-def challenge_player(request, blackbrair):
-    challenge_form = abs_forms.ChallengePlayer(request=request, blackbrair=blackbrair)
+def challenge_player(request, blackbriar):
+    challenge_form = abs_forms.ChallengePlayer(request=request, blackbriar=blackbriar)
     return JsonResponse(challenge_form.save())
 
 
@@ -52,3 +55,10 @@ def fight_challenge(request, challenge_id):
 def challenge_result(request, challenge_id):
     challenge = abs_models.Challenge.objects.get(pk=challenge_id)
     return JsonResponse(abs_utils.json_match_result(challenge.match.result))
+
+
+# @login_required
+@csrf_exempt
+def open_challenges(request):
+    challenges = [challenge.mini_json for challenge in abs_utils.open_challenge_list(abs_utils.get_active_user_profile(request))]
+    return JsonResponse(aetos_utils.success_true({'challenges': challenges}))

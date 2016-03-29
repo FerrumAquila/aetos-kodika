@@ -14,14 +14,15 @@
         <div class="tab-content p-t-0">
             <div role="tabpanel" class="tab-pane active" id="homePaneCard">
                 <div class="card">
-                    <p>Home Card</p>
+                    <h2>Home</h2>
+                    {% include "ass_brea_snip/components/challenge_list.html" %}
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane" id="warRoomPaneCard">
                 <div class="card">
                     <h2>War Room</h2>
                     {% include "ass_brea_snip/components/grid.html" %}
-                    <select id="blackBrairSelector">
+                    <select id="blackBriarSelector">
                         {% for profile in gamer_profiles %}
                         <option value="{{profile.gamer_tag}}">
                             {{profile.gamer_tag}}

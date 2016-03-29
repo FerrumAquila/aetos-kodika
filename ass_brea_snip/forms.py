@@ -10,7 +10,7 @@ from core.project_utils import utils as aetos_utils
 
 class ChallengePlayer(forms.Form):
 
-    def __init__(self, request, blackbrair):
+    def __init__(self, request, blackbriar):
         super(ChallengePlayer, self).__init__()
         self.request = request
         post_data = json.loads(self.request.POST['post_data'])
@@ -28,11 +28,11 @@ class ChallengePlayer(forms.Form):
             '2__2': 1
         }"""
         self.hitmen = abs_models.UserProfile.objects.get(user=self.request.user, gamer_tag=hitmen)
-        self.blackbrair = abs_models.UserProfile.objects.get(gamer_tag=blackbrair)
+        self.blackbriar = abs_models.UserProfile.objects.get(gamer_tag=blackbriar)
         self.hitmen_strategy = abs_utils.make_strategy(self.hitmen, hitmen_strategy_grid)
         match = abs_models.Match(hitmen=self.hitmen_strategy)
         match.save()
-        self.challenge, created = abs_utils.get_or_create_challenge(self.hitmen, self.blackbrair, match.id)
+        self.challenge, created = abs_utils.get_or_create_challenge(self.hitmen, self.blackbriar, match.id)
 
     def save(self):
         response = aetos_utils.success_true({'challenge_id': self.challenge.id})
@@ -45,8 +45,8 @@ class FightChallenge(forms.Form):
         super(FightChallenge, self).__init__()
         self.request = request
         post_data = json.loads(self.request.POST['post_data'])
-        blackbrair_strategy_grid = post_data['blackbrair_strategy_grid']
-        """blackbrair_strategy_grid = {
+        blackbriar_strategy_grid = post_data['blackbriar_strategy_grid']
+        """blackbriar_strategy_grid = {
             '0__0': 1,
             '0__1': 2,
             '0__2': 1,
@@ -59,12 +59,12 @@ class FightChallenge(forms.Form):
         }"""
         self.challenge = abs_models.Challenge.objects.get(pk=challenge_id)
         self.hitmen = self.challenge.challenger
-        self.blackbrair = self.challenge.challengee
-        self.blackbrair_strategy = abs_utils.make_strategy(self.blackbrair, blackbrair_strategy_grid)
+        self.blackbriar = self.challenge.challengee
+        self.blackbriar_strategy = abs_utils.make_strategy(self.blackbriar, blackbriar_strategy_grid)
 
     def save(self):
         abs_utils.accept_challenge(self.challenge.id)
-        abs_utils.fight_challenge(self.challenge.id, self.blackbrair_strategy.grid)
+        abs_utils.fight_challenge(self.challenge.id, self.blackbriar_strategy.grid)
         result = self.challenge.match.result
         response = aetos_utils.success_true(abs_utils.json_match_result(result))
         return response
