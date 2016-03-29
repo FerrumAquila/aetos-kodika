@@ -15,12 +15,22 @@
             <div role="tabpanel" class="tab-pane active" id="homePaneCard">
                 <div class="card">
                     <p>Home Card</p>
-                    {% include "ass_brea_snip/components/grid.html" %}
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane" id="warRoomPaneCard">
                 <div class="card">
-                    <p>War Room Card</p>
+                    <h2>War Room</h2>
+                    {% include "ass_brea_snip/components/grid.html" %}
+                    <select id="blackBrairSelector">
+                        {% for profile in gamer_profiles %}
+                        <option value="{{profile.gamer_tag}}">
+                            {{profile.gamer_tag}}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <button id="makeWarAndLoveBtn" class="btn btn-primary waves-effect waves-button waves-float">
+                        <i class="md-map"></i><span>Make War and Love</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -31,7 +41,11 @@
 {% block footer %}
 <script type="text/javascript">
     var id_icon_map = JSON.parse("{{id_icon_map|safe|escapejs}}");
-    var CHALLENGE_PLAYER_URL = "{% url 'abs_challenge_player' 'ironeagle' %}"  //this should be a function
+    var HITMEN_GAMER_TAG = "{{hitmen_profile.gamer_tag}}"
+    var CHALLENGE_PLAYER_URL = "{% url 'abs_challenge_player' 'gamer_tag' %}"
+    getChallengePlayerURL = (function(gamerTag){
+        return CHALLENGE_PLAYER_URL.replace('gamer_tag', gamerTag)
+    });
 </script>
 <script src="{% static 'js/game.js' %}"></script>
 {% endblock %}

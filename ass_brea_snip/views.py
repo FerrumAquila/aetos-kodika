@@ -12,7 +12,11 @@ from django.http import JsonResponse
 
 # @login_required
 def index(request):
-    return render(request, "ass_brea_snip/index.html", {'id_icon_map': json.dumps(abs_models.Soldier.objects.id_icon_map())})
+    return render(request, "ass_brea_snip/index.html", {
+        'hitmen_profile': abs_utils.get_active_user_profile(request),
+        'id_icon_map': json.dumps(abs_models.Soldier.objects.id_icon_map()),
+        'gamer_profiles': abs_models.UserProfile.objects.all().exclude(user=request.user),
+    })
 
 
 # @login_required

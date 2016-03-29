@@ -28,16 +28,20 @@ changeGridVal = (function(id){
     gridInput.val(soldierId);
 })
 
-throwChallenge = (function(id){
+throwChallenge = (function(hitmenGamerTag, blackBrairGamerTag){
     var postData = {};
-    postData['hitmen_gamer_tag'] = 'ironeagle';
+    postData['hitmen_gamer_tag'] = hitmenGamerTag;
     postData['hitmen_strategy_grid'] = getGridVal();
-    var data = {'post_data': JSON.stringify(postData)}
-    var url = CHALLENGE_PLAYER_URL
+    var data = {'post_data': JSON.stringify(postData)};
+    var url = getChallengePlayerURL(blackBrairGamerTag);
     $.post(url, data, function(data){
         response = data;
         alert('challenge id ' + response['challenge_id'] + ' created')
     });
 })
+
+$('#makeWarAndLoveBtn').on('click', function(data){
+    throwChallenge(HITMEN_GAMER_TAG, $('#blackBrairSelector').val())
+});
 
 $('.gridTabBtn').each(function(){changeGridVal(this.id)})

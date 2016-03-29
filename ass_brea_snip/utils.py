@@ -160,3 +160,7 @@ def skirmish_result(hitmen_strategy, blackbriar_strategy):
 
 def determine_winner(war_stats):
     return max(war_stats.iterkeys(), key=lambda k: war_stats[k])
+
+
+def get_active_user_profile(request):
+    return request.user.abs_profile
