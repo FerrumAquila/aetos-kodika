@@ -5,7 +5,7 @@ __author__ = 'ironeagle'
 
 import math
 
-from . import models as app_models
+from . import models as abs_models
 from collections import Counter
 
 json_match_result = lambda result: {'score': {key.gamer_tag: value for key, value in result['stats'].items()},
@@ -91,7 +91,7 @@ def abs_profile_required(view_func):
     def test_func(user):
         try:
             user.abs_profile
-        except app_models.UserProfile.DoesNotExist:
+        except abs_models.UserProfile.DoesNotExist:
             return False
         else:
             return True
@@ -99,28 +99,28 @@ def abs_profile_required(view_func):
 
 
 def get_or_create_challenge(challenger, challengee, match_id):
-    return app_models.Challenge.objects.get_or_create(
+    return abs_models.Challenge.objects.get_or_create(
         challenger=challenger, challengee=challengee, match_id=match_id
     )
 
 
 def accept_challenge(challenge_id):
-    challenge = app_models.Challenge.objects.get(id=challenge_id)
-    challenge.state = app_models.Challenge.ACCEPTED
+    challenge = abs_models.Challenge.objects.get(id=challenge_id)
+    challenge.state = abs_models.Challenge.ACCEPTED
     challenge.save(update_fields=['state'])
     return challenge
 
 
 def decline_challenge(challenge_id):
-    challenge = app_models.Challenge.objects.get(id=challenge_id)
-    challenge.state = app_models.Challenge.DECLINED
+    challenge = abs_models.Challenge.objects.get(id=challenge_id)
+    challenge.state = abs_models.Challenge.DECLINED
     challenge.save(update_fields=['state'])
     return challenge
 
 
 def fight_challenge(challenge_id, challengee_map):
-    challenge = app_models.Challenge.objects.get(id=challenge_id, state=app_models.Challenge.ACCEPTED)
-    challenge.state = app_models.Challenge.COMPLETED
+    challenge = abs_models.Challenge.objects.get(id=challenge_id, state=abs_models.Challenge.ACCEPTED)
+    challenge.state = abs_models.Challenge.COMPLETED
     challenge_match = challenge.match
     challengee_strategy = make_strategy(challenge.challengee, challengee_map)
     challenge_match.blackbriar = challengee_strategy
@@ -130,7 +130,7 @@ def fight_challenge(challenge_id, challengee_map):
 
 
 def determine_challenge_winner(challenge_id):
-    challenge = app_models.Challenge.objects.get(id=challenge_id, state=app_models.Challenge.COMPLETED)
+    challenge = abs_models.Challenge.objects.get(id=challenge_id, state=abs_models.Challenge.COMPLETED)
     winner = challenge.match.winner
     return winner
 
@@ -142,7 +142,7 @@ def match_result(match):
 
 
 def make_strategy(gamer, strategy_map):
-    strategy = app_models.Strategy(player=gamer, grid=strategy_map)
+    strategy = abs_models.Strategy(player=gamer, grid=strategy_map)
     strategy.save()
     return strategy
 
@@ -150,7 +150,7 @@ def make_strategy(gamer, strategy_map):
 def skirmish_result(hitmen_strategy, blackbriar_strategy):
     survivor = lambda hitmen, blackbriar: hitmen_strategy.player if blackbriar in hitmen.can_kill.all()\
         else blackbriar_strategy.player
-    soldier = lambda pk: app_models.Soldier.objects.get(pk=pk)
+    soldier = lambda pk: abs_models.Soldier.objects.get(pk=pk)
     shootout = [
         survivor(soldier(hitmen), soldier(blackbriar)) for (hitmen_pos, hitmen), (blackbriar_pos, blackbriar) in zip(
             hitmen_strategy.grid.items(), blackbriar_strategy.grid.items())
