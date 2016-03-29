@@ -5,7 +5,7 @@ from . import models as abs_models
 from . import utils as abs_utils
 
 from django import forms
-from aetos.project_utils import utils as aetos_utils
+from core.project_utils import utils as aetos_utils
 
 
 class ChallengePlayer(forms.Form):

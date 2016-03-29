@@ -75,9 +75,9 @@ class Match(models.Model):
 
     @cached_property
     def result(self):
-        from . import utils as app_utils
-        match_stats = app_utils.skirmish_result(self.hitmen, self.blackbriar)
-        return {'stats': match_stats, 'winner': app_utils.determine_winner(match_stats)}
+        from . import utils as abs_utils
+        match_stats = abs_utils.skirmish_result(self.hitmen, self.blackbriar)
+        return {'stats': match_stats, 'winner': abs_utils.determine_winner(match_stats)}
 
 
 class Challenge(models.Model):

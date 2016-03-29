@@ -3,7 +3,7 @@ import json
 from . import forms as abs_forms
 from . import utils as abs_utils
 from . import models as abs_models
-from aetos.project_utils import utils as aetos_utils
+from core.project_utils import utils as aetos_utils
 
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
