@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Directions service</title>
+    <style>
+        html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        }
+        #map {
+        height: 100%;
+        }
+        .floating-panel {
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+        text-align: center;
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="floating-panel">
+        <!--input onclick="clearMarkers();" type=button value="Hide Markers">
+        <input onclick="showMarkers();" type=button value="Show All Markers">
+        <input onclick="deleteMarkers();" type=button value="Delete Markers"-->
+    </div>
+    <div id="map"></div>
+    <p>Click on the map to add markers.</p>
+</body>
+<script>
+
+    initMap = (function() {
+        directionsService = new google.maps.DirectionsService;
+        bounds = new google.maps.LatLngBounds();
+        markers = [];
+        polylines = [
+            new google.maps.Polyline({
+              path: [],
+              strokeColor: "#ff0000",
+              strokeWeight: 3
+            }),
+            new google.maps.Polyline({
+              path: [],
+              strokeColor: "#0000ff",
+              strokeWeight: 3
+            })
+        ]
+
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 17,
+            center: {lat: 19.1183, lng: 72.9061}
+        });
+
+        map.addListener('click', function(event) {
+            var routeNo = addMarker(event.latLng);
+            if(routeNo){
+                calculateAndDisplayRoute(directionsService, routeNo);
+            }
+        });
+
+        alert('please enter route 1 by selecting start and end point');
+
+    })
+
+
+    getLatLngLiteral = (function(marker) {
+        literal = new google.maps.LatLng(marker.position.lat(), marker.position.lng());
+        return literal
+    });
+
+
+    calculateAndDisplayRoute = (function(directionsService, routeNo) {
+        startId = routeNo * 2 - 2;
+        endId = routeNo * 2 - 1;
+        var start = getLatLngLiteral(markers[startId]);
+        var end = getLatLngLiteral(markers[endId]);
+        directionsService.route(
+            { origin: start, destination: end, travelMode: google.maps.TravelMode.DRIVING },
+            function(result, status) {
+                if (status === google.maps.DirectionsStatus.OK) {
+                    var renderer = new google.maps.DirectionsRenderer({
+                        draggable: false,
+                        polylineOptions: {
+                            strokeColor: polylines[routeNo - 1].strokeColor,
+                            strokeWeight: polylines[routeNo - 1].strokeWeight
+                        },
+                        map: map
+                    });
+                    var path = result.routes[0].overview_path;
+                    var legs = result.routes[0].legs;
+                    for (i = 0; i < legs.length; i++) {
+                        var steps = legs[i].steps;
+                        for (j = 0; j < steps.length; j++) {
+                            var nextSegment = steps[j].path;
+                            for (k = 0; k < nextSegment.length; k++) {
+                                polylines[routeNo - 1].getPath().push(nextSegment[k]);
+                                bounds.extend(nextSegment[k]);
+                            }
+                        }
+                    }
+                    if (routeNo > 1) {
+                        getPolylineIntersection();
+                    }
+                    renderer.setDirections(result);
+                } else {
+                    window.alert('Directions request failed due to ' + status);
+                }
+            }
+        );
+    });
+
+
+    getPolylineIntersection = (function() {
+        commonPts = [];
+        for (var i = 0; i < polylines[0].getPath().getLength(); i++) {
+            for (var j = 0; j < polylines[1].getPath().getLength(); j++) {
+                if (polylines[0].getPath().getAt(i).equals(polylines[1].getPath().getAt(j))) {
+                    ptOption = {
+                        lat: polylines[1].getPath().getAt(j).lat(),
+                        lng: polylines[1].getPath().getAt(j).lng(),
+                        routeId: i
+                    }
+                    console.log(ptOption);
+                    commonPts.push(ptOption);
+                }
+            }
+        }
+        var path = [];
+        var prevIdx = commonPts[0].routeId;
+        for (var i = 0; i < commonPts.length; i++) {
+            if (commonPts[i].routeId <= prevIdx + 1) {
+                path.push(commonPts[i]);
+                prevIdx = commonPts[i].routeId;
+            } else {
+                path = [];
+                prevIdx = commonPts[i].routeId;
+            }
+        }
+        var polyline = new google.maps.Polyline({
+            map: map,
+            path: path,
+            strokeWeight: 8,
+            strokeColor: "#00ff00"
+        });
+    });
+
+
+    addMarker = (function(location) {
+        var marker = new google.maps.Marker({ position: location, map: map });
+        if(markers.length < (polylines.length * 2)){
+            markers.push(marker);
+            isEndPoint = !(markers.length % 2);
+            if(isEndPoint){
+                routeNo = parseInt(markers.length / 2);
+                alert('please enter next route by selecting starting and end point')
+            }else{
+                routeNo = 0;
+            }
+        }else{
+            alert('max locations selected\nplease refresh to enter again');
+        }
+        return routeNo;
+    });
+
+
+    setMapOnAll = (function(map) {
+        for (var i = 0; i < markers.length; i++) { markers[i].setMap(map); };
+    });
+
+
+    clearMarkers = (function() { setMapOnAll(null); });
+
+
+    showMarkers = function() { setMapOnAll(map); }
+
+
+    deleteMarkers = (function() {
+        clearMarkers();
+        markers = [];
+    });
+
+
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhd1Qr6F0dlMSio9KthBj23Woj_NMpjXM&callback=initMap">
+</script>
+</html>
