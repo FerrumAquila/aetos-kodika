@@ -4,6 +4,7 @@ import views as app_views
 
 urlpatterns = [
     # json view urls
+    url(r'^load/grid/$', app_views.load_grid, name='abs_load_grid'),
 
     # api urls
     url(r'^challenge/fight/(?P<challenge_id>[\w-]+)/$', app_views.fight_challenge, name='abs_fight_challenge'),

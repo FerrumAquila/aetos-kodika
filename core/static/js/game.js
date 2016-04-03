@@ -15,6 +15,7 @@ getGridVal = (function(){
 })
 
 changeGridVal = (function(id){
+    console.log('changed')
     var gridIcon = $("#gridIcon" + id);
     var gridLoadout = $("#gridLoadout" + id);
     var gridInput = $("#gridInput" + id);
@@ -44,4 +45,38 @@ $('#makeWarAndLoveBtn').on('click', function(data){
     throwChallenge(HITMEN_GAMER_TAG, $('#blackBriarSelector').val())
 });
 
-$('.gridTabBtn').each(function(){changeGridVal(this.id)})
+$('.makeStrategyBtn').on('click', function(data){
+    loadResponseGrid();
+});
+
+loadResponseGrid = (function(){
+    $('#gridTable').remove();
+    url = LOAD_GRID_URL;
+    $.get(url, function(data){
+        response = data;
+        console.log(response);
+        $('#fightChallengeGridHolder').html(response.rendered_html);
+        gameInitScript();
+    })
+    $('#makeWarAndLoveBtn').on('click', function(data){
+        fightChallenge(3)
+    });
+})
+
+
+fightChallenge = (function(challengeId){
+    var postData = {};
+    postData['blackbriar_strategy_grid'] = getGridVal();
+    var data = {'post_data': JSON.stringify(postData)};
+    var url = getFightChallengeURL(challengeId);
+    $.post(url, data, function(data){
+        response = data;
+        console.log(response);
+    });
+})
+
+gameInitScript = (function(){
+    $('.gridTabBtn').each(function(){changeGridVal(this.id)});
+})
+
+gameInitScript();

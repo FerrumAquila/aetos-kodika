@@ -17,6 +17,7 @@
                     <h2>Home</h2>
                     {% include "ass_brea_snip/components/challenge_list.html" %}
                 </div>
+                <div id="fightChallengeGridHolder"></div>
             </div>
             <div role="tabpanel" class="tab-pane" id="warRoomPaneCard">
                 <div class="card">
@@ -29,9 +30,6 @@
                         </option>
                         {% endfor %}
                     </select>
-                    <button id="makeWarAndLoveBtn" class="btn btn-primary waves-effect waves-button waves-float">
-                        <i class="md-map"></i><span>Make War and Love</span>
-                    </button>
                 </div>
             </div>
         </div>
@@ -44,8 +42,13 @@
     var id_icon_map = JSON.parse("{{id_icon_map|safe|escapejs}}");
     var HITMEN_GAMER_TAG = "{{hitmen_profile.gamer_tag}}"
     var CHALLENGE_PLAYER_URL = "{% url 'abs_challenge_player' 'gamer_tag' %}"
+    var FIGHT_CHALLENGE_URL = "{% url 'abs_fight_challenge' 'challenge_id' %}"
+    var LOAD_GRID_URL = "{% url 'abs_load_grid' %}"
     getChallengePlayerURL = (function(gamerTag){
         return CHALLENGE_PLAYER_URL.replace('gamer_tag', gamerTag)
+    });
+    getFightChallengeURL = (function(challengeId){
+        return FIGHT_CHALLENGE_URL.replace('challenge_id', challengeId)
     });
 </script>
 <script src="{% static 'js/game.js' %}"></script>

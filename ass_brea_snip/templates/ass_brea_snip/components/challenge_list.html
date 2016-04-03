@@ -1,5 +1,5 @@
 <div class="table-responsive" tabindex="2" style="overflow: hidden; outline: none;">
-    <table id="gridTable" class="table table-bordered">
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th>
@@ -10,6 +10,9 @@
                 </th>
                 <th>
                     State
+                </th>
+                <th>
+                    Fight!
                 </th>
             </tr>
         </thead>
@@ -24,6 +27,11 @@
                 </td>
                 <td>
                     {{challenge.state}}
+                </td>
+                <td>
+                    <button class="btn btn-primary waves-effect waves-button waves-float makeStrategyBtn">
+                        <i class="md-map"></i><span>WAR!!!!!</span>
+                    </button>
                 </td>
             </tr>
             {% endfor %}
