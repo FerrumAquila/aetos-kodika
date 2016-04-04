@@ -80,6 +80,7 @@
 
     initMap = (function() {
         directionsService = new google.maps.DirectionsService;
+        distancesService = new google.maps.DistanceMatrixService();
         bounds = new google.maps.LatLngBounds();
         markers = [];
         polylines = [
@@ -113,10 +114,8 @@
     })
 
 
-    getLatLngLiteral = (function(marker) {
-        literal = new google.maps.LatLng(marker.position.lat(), marker.position.lng());
-        return literal
-    });
+    makeLatLngLiteral = (function(lat, lng) { return new google.maps.LatLng(lat, lng); });
+    getLatLngLiteral = (function(marker) { return makeLatLngLiteral(marker.position.lat(), marker.position.lng()); });
 
 
     calculateAndDisplayRoute = (function(directionsService, routeNo) {
@@ -124,39 +123,55 @@
         endId = routeNo * 2 - 1;
         var start = getLatLngLiteral(markers[startId]);
         var end = getLatLngLiteral(markers[endId]);
-        directionsService.route(
-            { origin: start, destination: end, travelMode: google.maps.TravelMode.DRIVING },
-            function(result, status) {
-                if (status === google.maps.DirectionsStatus.OK) {
-                    var renderer = new google.maps.DirectionsRenderer({
-                        draggable: false,
-                        polylineOptions: {
-                            strokeColor: polylines[routeNo - 1].strokeColor,
-                            strokeWeight: polylines[routeNo - 1].strokeWeight
-                        },
-                        map: map
-                    });
-                    var path = result.routes[0].overview_path;
-                    var legs = result.routes[0].legs;
-                    for (i = 0; i < legs.length; i++) {
-                        var steps = legs[i].steps;
-                        for (j = 0; j < steps.length; j++) {
-                            var nextSegment = steps[j].path;
-                            for (k = 0; k < nextSegment.length; k++) {
-                                polylines[routeNo - 1].getPath().push(nextSegment[k]);
-                                bounds.extend(nextSegment[k]);
-                            }
+        directionsService.route({
+            origin: start, destination: end, travelMode: google.maps.TravelMode.DRIVING
+        }, function(result, status) {
+            if (status === google.maps.DirectionsStatus.OK) {
+                var renderer = new google.maps.DirectionsRenderer({
+                    draggable: false,
+                    polylineOptions: {
+                        strokeColor: polylines[routeNo - 1].strokeColor,
+                        strokeWeight: polylines[routeNo - 1].strokeWeight
+                    },
+                    map: map
+                });
+                var path = result.routes[0].overview_path;
+                var legs = result.routes[0].legs;
+                for (i = 0; i < legs.length; i++) {
+                    var steps = legs[i].steps;
+                    for (j = 0; j < steps.length; j++) {
+                        var nextSegment = steps[j].path;
+                        for (k = 0; k < nextSegment.length; k++) {
+                            polylines[routeNo - 1].getPath().push(nextSegment[k]);
+                            bounds.extend(nextSegment[k]);
                         }
                     }
-                    if (routeNo > 1) {
-                        getPolylineIntersection();
-                    }
-                    renderer.setDirections(result);
-                } else {
-                    alert('Directions request failed due to ' + status);
                 }
+                if (routeNo > 1) {
+                    getPolylineIntersection();
+                }
+                renderer.setDirections(result);
+            } else {
+                alert('Directions request failed due to ' + status);
             }
-        );
+        });
+    });
+
+
+    calculateCommonDistance = (function(distancesService, origin, destination) {
+        response = distancesService.getDistanceMatrix({
+            origins: [makeLatLngLiteral(origin.lat, origin.lng)],
+            destinations: [makeLatLngLiteral(destination.lat, destination.lng)],
+            travelMode: google.maps.TravelMode.DRIVING,
+        }, function(result, status) {
+            if (status === google.maps.DirectionsStatus.OK) {
+                warZoneDistance = result.rows[0].elements[0].distance.value;
+                return result.rows[0].elements[0].distance.value;
+            }else{
+                alert('Distance request failed due to ' + status);
+                return false;
+            }
+        });
     });
 
 
@@ -191,6 +206,7 @@
             strokeWeight: 8,
             strokeColor: "#000000"
         });
+        calculateCommonDistance(distancesService, commonPts[0], commonPts[commonPts.length-1])
     });
 
 
@@ -338,28 +354,15 @@
         var nAnimIn = 'animated fadeInUp';
         var nAnimOut = 'animated fadeOutDown';
         var title = 'WAR ZONE DETECTED';
-        var message = 'Black zone is declared "Off Limits" due to fighting between <strong>Security Forces</strong> and <strong>Insurgents</strong>';
-        notify(nFrom, nAlign, nIcons, nType, nAnimIn, nAnimOut, title, message);
-    });
-
-
-    disablePositionMarking = (function() {
-        var nFrom = 'bottom';
-        var nAlign = 'center';
-        var nIcons = '';
-        var nType = 'inverse';
-        var nAnimIn = 'animated fadeInUp';
-        var nAnimOut = 'animated fadeOutDown';
-        var title = 'WAR ZONE DETECTED';
-        var message = 'Black zone is declared "Hot Zone" due to fighting between <strong>Security Forces</strong> and <strong>Insurgents</strong>';
+        var message = 'Thick Black Line is declared "Hot Zone" due to fighting between <strong>Security Forces</strong> and <strong>Insurgents</strong>';
         notify(nFrom, nAlign, nIcons, nType, nAnimIn, nAnimOut, title, message);
     });
 
 
     confirmRefresh = (function() {
         swal({
-            title: "WARNING: FIGHTING IN PROGESS?",
-            text: "Are you sure we're all clear from the fighting?",
+            title: "WARNING: " + (warZoneDistance / 1000) + " KMs HOT ZONE IN BLACK!!",
+            text: "Are you sure we're all clear from Insurgents?",
             type: "warning",
             onShow: hideAllNotifications(),
             showCancelButton: true,
