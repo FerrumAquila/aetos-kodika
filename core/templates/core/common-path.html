@@ -19,22 +19,22 @@
 
     <style>
         html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
+            height: 100%;
+            margin: 0;
+            padding: 0;
         }
         #map {
-        height: 100%;
+            height: 100%;
         }
         .floating-panel {
-        z-index: 5;
-        background-color: #fff;
-        padding: 5px;
-        border: 1px solid #999;
-        text-align: center;
-        font-family: 'Roboto','sans-serif';
-        line-height: 30px;
-        padding-left: 10px;
+            z-index: 5;
+            background-color: #fff;
+            padding: 5px;
+            border: 1px solid #999;
+            text-align: center;
+            font-family: 'Roboto','sans-serif';
+            line-height: 30px;
+            padding-left: 10px;
         }
     </style>
 </head>
@@ -80,7 +80,7 @@
 
     initMap = (function() {
         directionsService = new google.maps.DirectionsService;
-        distancesService = new google.maps.DistanceMatrixService();
+        distancesService = new google.maps.DistanceMatrixService;
         bounds = new google.maps.LatLngBounds();
         markers = [];
         polylines = [
