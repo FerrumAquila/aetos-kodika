@@ -106,7 +106,6 @@
         });
 
         map.addListener('click', function(event) {
-            console.log(event.latLng.lat(), event.latLng.lng());
             addMarker(event.latLng);
         });
 
@@ -117,7 +116,6 @@
 
         storyNotificationFunctionList[markers.length]();
         manageTutorial(tutorial);
-
     })
 
 
@@ -256,23 +254,6 @@
         if(routeNo){
             calculateAndDisplayRoute(directionsService, routeNo);
         }
-    });
-
-
-    setMapOnAll = (function(map) {
-        for (var i = 0; i < markers.length; i++) { markers[i].setMap(map); };
-    });
-
-
-    clearMarkers = (function() { setMapOnAll(null); });
-
-
-    showMarkers = function() { setMapOnAll(map); }
-
-
-    deleteMarkers = (function() {
-        clearMarkers();
-        markers = [];
     });
 
 
@@ -419,8 +400,6 @@
             }
         });
     });
-
-
 
 </script>
 <script async defer
