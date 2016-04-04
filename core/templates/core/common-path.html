@@ -94,7 +94,7 @@
               strokeWeight: 3
             }),
         ]
-        notificationFunctionList = [topLeft, topRight, bottomLeft, bottomRight, warZone]
+        storyNotificationFunctionList = [topLeft, topRight, bottomLeft, bottomRight, warZone]
 
         map = new google.maps.Map(document.getElementById('map'), {
             zoom: 17,
@@ -108,8 +108,7 @@
             }
         });
 
-        // alert('please enter route 1 by selecting start and end point');
-        notificationFunctionList[markers.length]()
+        storyNotificationFunctionList[markers.length]()
 
     })
 
@@ -154,7 +153,7 @@
                     }
                     renderer.setDirections(result);
                 } else {
-                    window.alert('Directions request failed due to ' + status);
+                    alert('Directions request failed due to ' + status);
                 }
             }
         );
@@ -171,7 +170,6 @@
                         lng: polylines[1].getPath().getAt(j).lng(),
                         routeId: i
                     }
-                    console.log(ptOption);
                     commonPts.push(ptOption);
                 }
             }
@@ -197,10 +195,10 @@
 
 
     addMarker = (function(location) {
-        var marker = new google.maps.Marker({ position: location, map: map });
         if(markers.length < (polylines.length * 2)){
+            var marker = new google.maps.Marker({ position: location, map: map });
             markers.push(marker);
-            if(markers.length < notificationFunctionList.length){ notificationFunctionList[markers.length]() };
+            if(markers.length < storyNotificationFunctionList.length){ storyNotificationFunctionList[markers.length]() };
             isEndPoint = !(markers.length % 2);
             if(isEndPoint){
                 routeNo = parseInt(markers.length / 2);
@@ -208,7 +206,7 @@
                 routeNo = 0;
             }
         }else{
-            alert('max locations selected\nplease refresh to enter again');
+            confirmRefresh();
         }
         return routeNo;
     });
@@ -242,40 +240,40 @@
             message: message,
             url: ''
         },{
-                element: 'body',
-                onShow: hideAllNotifications(),
-                type: type,
-                allow_dismiss: true,
-                placement: {
-                        from: from,
-                        align: align
-                },
-                offset: {
-                    x: 20,
-                    y: 85
-                },
-                spacing: 10,
-                z_index: 1031,
-                delay: 15000,
-                timer: 3000,
-                url_target: '_blank',
-                mouse_over: false,
-                animate: {
-                        enter: animIn,
-                        exit: animOut
-                },
-                icon_type: 'class',
-                template:
-                    '<div data-growl="container" class="alert" role="alert">' +
-                        '<button type="button" class="close" data-growl="dismiss">' +
-                            '<span aria-hidden="true">&times;</span>' +
-                            '<span class="sr-only">Close</span>' +
-                        '</button>' +
-                        '<span data-growl="icon"></span>' +
-                        '<strong><span data-growl="title"></span><strong>: ' +
-                        '<span data-growl="message"></span>' +
-                        '<a href="#" data-growl="url"></a>' +
-                    '</div>'
+            element: 'body',
+            onShow: hideAllNotifications(),
+            type: type,
+            allow_dismiss: true,
+            placement: {
+                    from: from,
+                    align: align
+            },
+            offset: {
+                x: 20,
+                y: 85
+            },
+            spacing: 10,
+            z_index: 1031,
+            delay: 15000,
+            timer: 3000,
+            url_target: '_blank',
+            mouse_over: false,
+            animate: {
+                    enter: animIn,
+                    exit: animOut
+            },
+            icon_type: 'class',
+            template:
+                '<div data-growl="container" class="alert" role="alert">' +
+                    '<button type="button" class="close" data-growl="dismiss">' +
+                        '<span aria-hidden="true">&times;</span>' +
+                        '<span class="sr-only">Close</span>' +
+                    '</button>' +
+                    '<span data-growl="icon"></span>' +
+                    '<strong><span data-growl="title"></span><strong>: ' +
+                    '<span data-growl="message"></span>' +
+                    '<a href="#" data-growl="url"></a>' +
+                '</div>'
         });
     });
 
@@ -343,6 +341,43 @@
         var message = 'Black zone is declared "Off Limits" due to fighting between <strong>Security Forces</strong> and <strong>Insurgents</strong>';
         notify(nFrom, nAlign, nIcons, nType, nAnimIn, nAnimOut, title, message);
     });
+
+
+    disablePositionMarking = (function() {
+        var nFrom = 'bottom';
+        var nAlign = 'center';
+        var nIcons = '';
+        var nType = 'inverse';
+        var nAnimIn = 'animated fadeInUp';
+        var nAnimOut = 'animated fadeOutDown';
+        var title = 'WAR ZONE DETECTED';
+        var message = 'Black zone is declared "Hot Zone" due to fighting between <strong>Security Forces</strong> and <strong>Insurgents</strong>';
+        notify(nFrom, nAlign, nIcons, nType, nAnimIn, nAnimOut, title, message);
+    });
+
+
+    confirmRefresh = (function() {
+        swal({
+            title: "WARNING: FIGHTING IN PROGESS?",
+            text: "Are you sure we're all clear from the fighting?",
+            type: "warning",
+            onShow: hideAllNotifications(),
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Roger that!",
+            cancelButtonText: "Negative!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        }, function(isConfirm){
+            if (isConfirm) {
+                initMap();
+                swal("All Clear!", "Resume mission with new routes", "success");
+            } else {
+                swal("Hold Position!", "Stand ground and defend yourselves", "error");
+            }
+        });
+    });
+
 
 
 </script>
