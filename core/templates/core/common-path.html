@@ -26,29 +26,22 @@
         #map {
             height: 100%;
         }
-        .floating-panel {
-            z-index: 5;
-            background-color: #fff;
-            padding: 5px;
-            border: 1px solid #999;
-            text-align: center;
-            font-family: 'Roboto','sans-serif';
-            line-height: 30px;
-            padding-left: 10px;
+        #tutorialToggle {
+            position: fixed;
+            float: right;
+            z-index: 100;
+            top: 10%;
+            right: 5%;
         }
     </style>
 </head>
 <body>
-    <div>
-        <button id="tutorialToggle" class="btn btn-icon waves-effect waves-button waves-float"><i class="md md-live-help"></i></button>
-    </div>
-    <div id="floating-panel">
-        <!--input onclick="clearMarkers();" type=button value="Hide Markers">
-        <input onclick="showMarkers();" type=button value="Show All Markers">
-        <input onclick="deleteMarkers();" type=button value="Delete Markers"-->
+    <div class="container">
+        <div class="pull-right">
+            <button id="tutorialToggle" class="btn btn-icon waves-effect waves-button waves-float"><i class="md md-help"></i></button>
+        </div>
     </div>
     <div id="map"></div>
-    <p>Click on the map to add markers.</p>
 </body>
 
 <!-- Javascript Libraries -->
