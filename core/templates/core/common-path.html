@@ -260,24 +260,15 @@
             onShow: hideAllNotifications(),
             type: type,
             allow_dismiss: true,
-            placement: {
-                    from: from,
-                    align: align
-            },
-            offset: {
-                x: 20,
-                y: 85
-            },
+            placement: { from: from, align: align },
+            offset: { x: 20, y: 85 },
             spacing: 10,
             z_index: 1031,
             delay: 15000,
             timer: 3000,
             url_target: '_blank',
             mouse_over: false,
-            animate: {
-                    enter: animIn,
-                    exit: animOut
-            },
+            animate: { enter: animIn, exit: animOut },
             icon_type: 'class',
             template:
                 '<div data-growl="container" class="alert" role="alert">' +
