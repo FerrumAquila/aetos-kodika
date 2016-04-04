@@ -11,3 +11,7 @@ def home(request):
 
 def profile(request):
     return render_to_response("core/profile.html", {})
+
+
+def common_path(request):
+    return render_to_response("core/common-path.html", {})

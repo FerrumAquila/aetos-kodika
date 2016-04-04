@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Common Path</title>
+
+    <!-- Vendor CSS -->
+    <link href="{% static 'vendors/fullcalendar/fullcalendar.css' %}" rel="stylesheet">
+    <link href="{% static 'vendors/animate-css/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendors/sweet-alert/sweet-alert.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendors/material-icons/material-design-iconic-font.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendors/socicon/socicon.min.css' %}" rel="stylesheet">
+
+    <!-- CSS -->
+    <link href="{% static 'css/app.min.1.css' %}" rel="stylesheet">
+    <link href="{% static 'css/app.min.2.css' %}" rel="stylesheet">
+
+    <style>
+        html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        }
+        #map {
+        height: 100%;
+        }
+        .floating-panel {
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+        text-align: center;
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="floating-panel">
+        <!--input onclick="clearMarkers();" type=button value="Hide Markers">
+        <input onclick="showMarkers();" type=button value="Show All Markers">
+        <input onclick="deleteMarkers();" type=button value="Delete Markers"-->
+    </div>
+    <div id="map"></div>
+    <p>Click on the map to add markers.</p>
+</body>
+
+<!-- Javascript Libraries -->
+<script src="{% static 'js/jquery-2.1.1.min.js' %}"></script>
+<script src="{% static 'knockout-3.3.0.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+<script src="{% static 'vendors/flot/jquery.flot.min.js' %}"></script>
+<script src="{% static 'vendors/flot/jquery.flot.resize.min.js' %}"></script>
+<script src="{% static 'vendors/flot/plugins/curvedLines.js' %}"></script>
+<script src="{% static 'vendors/sparklines/jquery.sparkline.min.js' %}"></script>
+<script src="{% static 'vendors/easypiechart/jquery.easypiechart.min.js' %}"></script>
+
+<script src="{% static 'vendors/fullcalendar/lib/moment.min.js' %}"></script>
+<script src="{% static 'vendors/fullcalendar/fullcalendar.min.js' %}"></script>
+<script src="{% static 'vendors/simpleWeather/jquery.simpleWeather.min.js' %}"></script>
+<script src="{% static 'vendors/auto-size/jquery.autosize.min.js' %}"></script>
+<script src="{% static 'vendors/nicescroll/jquery.nicescroll.min.js' %}"></script>
+<script src="{% static 'vendors/waves/waves.min.js' %}"></script>
+<script src="{% static 'vendors/bootstrap-growl/bootstrap-growl.min.js' %}"></script>
+<script src="{% static 'vendors/sweet-alert/sweet-alert.min.js' %}"></script>
+
+<script src="{% static 'js/flot-charts/curved-line-chart.js' %}"></script>
+<script src="{% static 'js/flot-charts/line-chart.js' %}"></script>
+<script src="{% static 'js/charts.js' %}"></script>
+
+<script src="{% static 'js/charts.js' %}"></script>
+<script src="{% static 'js/functions.js' %}"></script>
+<script src="{% static 'js/demo.js' %}"></script>
+
+<script>
+
+    initMap = (function() {
+        directionsService = new google.maps.DirectionsService;
+        bounds = new google.maps.LatLngBounds();
+        markers = [];
+        polylines = [
+            new google.maps.Polyline({
+              path: [],
+              strokeColor: "#0000ff",
+              strokeWeight: 3
+            }),
+            new google.maps.Polyline({
+              path: [],
+              strokeColor: "#ff0000",
+              strokeWeight: 3
+            }),
+        ]
+        notificationFunctionList = [topLeft, topRight, bottomLeft, bottomRight, warZone]
+
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 17,
+            center: {lat: 19.1183, lng: 72.9061}
+        });
+
+        map.addListener('click', function(event) {
+            var routeNo = addMarker(event.latLng);
+            if(routeNo){
+                calculateAndDisplayRoute(directionsService, routeNo);
+            }
+        });
+
+        // alert('please enter route 1 by selecting start and end point');
+        notificationFunctionList[markers.length]()
+
+    })
+
+
+    getLatLngLiteral = (function(marker) {
+        literal = new google.maps.LatLng(marker.position.lat(), marker.position.lng());
+        return literal
+    });
+
+
+    calculateAndDisplayRoute = (function(directionsService, routeNo) {
+        startId = routeNo * 2 - 2;
+        endId = routeNo * 2 - 1;
+        var start = getLatLngLiteral(markers[startId]);
+        var end = getLatLngLiteral(markers[endId]);
+        directionsService.route(
+            { origin: start, destination: end, travelMode: google.maps.TravelMode.DRIVING },
+            function(result, status) {
+                if (status === google.maps.DirectionsStatus.OK) {
+                    var renderer = new google.maps.DirectionsRenderer({
+                        draggable: false,
+                        polylineOptions: {
+                            strokeColor: polylines[routeNo - 1].strokeColor,
+                            strokeWeight: polylines[routeNo - 1].strokeWeight
+                        },
+                        map: map
+                    });
+                    var path = result.routes[0].overview_path;
+                    var legs = result.routes[0].legs;
+                    for (i = 0; i < legs.length; i++) {
+                        var steps = legs[i].steps;
+                        for (j = 0; j < steps.length; j++) {
+                            var nextSegment = steps[j].path;
+                            for (k = 0; k < nextSegment.length; k++) {
+                                polylines[routeNo - 1].getPath().push(nextSegment[k]);
+                                bounds.extend(nextSegment[k]);
+                            }
+                        }
+                    }
+                    if (routeNo > 1) {
+                        getPolylineIntersection();
+                    }
+                    renderer.setDirections(result);
+                } else {
+                    window.alert('Directions request failed due to ' + status);
+                }
+            }
+        );
+    });
+
+
+    getPolylineIntersection = (function() {
+        commonPts = [];
+        for (var i = 0; i < polylines[0].getPath().getLength(); i++) {
+            for (var j = 0; j < polylines[1].getPath().getLength(); j++) {
+                if (polylines[0].getPath().getAt(i).equals(polylines[1].getPath().getAt(j))) {
+                    ptOption = {
+                        lat: polylines[1].getPath().getAt(j).lat(),
+                        lng: polylines[1].getPath().getAt(j).lng(),
+                        routeId: i
+                    }
+                    console.log(ptOption);
+                    commonPts.push(ptOption);
+                }
+            }
+        }
+        var path = [];
+        var prevIdx = commonPts[0].routeId;
+        for (var i = 0; i < commonPts.length; i++) {
+            if (commonPts[i].routeId <= prevIdx + 1) {
+                path.push(commonPts[i]);
+                prevIdx = commonPts[i].routeId;
+            } else {
+                path = [];
+                prevIdx = commonPts[i].routeId;
+            }
+        }
+        var polyline = new google.maps.Polyline({
+            map: map,
+            path: path,
+            strokeWeight: 8,
+            strokeColor: "#000000"
+        });
+    });
+
+
+    addMarker = (function(location) {
+        var marker = new google.maps.Marker({ position: location, map: map });
+        if(markers.length < (polylines.length * 2)){
+            markers.push(marker);
+            if(markers.length < notificationFunctionList.length){ notificationFunctionList[markers.length]() };
+            isEndPoint = !(markers.length % 2);
+            if(isEndPoint){
+                routeNo = parseInt(markers.length / 2);
+            }else{
+                routeNo = 0;
+            }
+        }else{
+            alert('max locations selected\nplease refresh to enter again');
+        }
+        return routeNo;
+    });
+
+
+    setMapOnAll = (function(map) {
+        for (var i = 0; i < markers.length; i++) { markers[i].setMap(map); };
+    });
+
+
+    clearMarkers = (function() { setMapOnAll(null); });
+
+
+    showMarkers = function() { setMapOnAll(map); }
+
+
+    deleteMarkers = (function() {
+        clearMarkers();
+        markers = [];
+    });
+
+
+    hideAllNotifications = (function() {
+        $('.alert').hide();
+    });
+
+    notify = (function(from, align, icon, type, animIn, animOut, title, message){
+        $.growl({
+            icon: icon,
+            title: title,
+            message: message,
+            url: ''
+        },{
+                element: 'body',
+                onShow: hideAllNotifications(),
+                type: type,
+                allow_dismiss: true,
+                placement: {
+                        from: from,
+                        align: align
+                },
+                offset: {
+                    x: 20,
+                    y: 85
+                },
+                spacing: 10,
+                z_index: 1031,
+                delay: 15000,
+                timer: 3000,
+                url_target: '_blank',
+                mouse_over: false,
+                animate: {
+                        enter: animIn,
+                        exit: animOut
+                },
+                icon_type: 'class',
+                template:
+                    '<div data-growl="container" class="alert" role="alert">' +
+                        '<button type="button" class="close" data-growl="dismiss">' +
+                            '<span aria-hidden="true">&times;</span>' +
+                            '<span class="sr-only">Close</span>' +
+                        '</button>' +
+                        '<span data-growl="icon"></span>' +
+                        '<strong><span data-growl="title"></span><strong>: ' +
+                        '<span data-growl="message"></span>' +
+                        '<a href="#" data-growl="url"></a>' +
+                    '</div>'
+        });
+    });
+
+
+    topLeft = (function() {
+        var nFrom = 'top';
+        var nAlign = 'left';
+        var nIcons = '';
+        var nType = 'info';
+        var nAnimIn = 'animated flipInX';
+        var nAnimOut = 'animated flipOutX';
+        var title = 'Security Forces';
+        var message = 'Select Starting Point for Supply and Evac Mission';
+        notify(nFrom, nAlign, nIcons, nType, nAnimIn, nAnimOut, title, message);
+    });
+
+
+    topRight = (function() {
+        var nFrom = 'top';
+        var nAlign = 'right';
+        var nIcons = '';
+        var nType = 'info';
+        var nAnimIn = 'animated bounceInRight';
+        var nAnimOut = 'animated bounceOutRight';
+        var title = 'Security Forces';
+        var message = 'Select Ending Point for Supply and Evac Mission';
+        notify(nFrom, nAlign, nIcons, nType, nAnimIn, nAnimOut, title, message);
+    });
+
+
+    bottomLeft = (function() {
+        var nFrom = 'bottom';
+        var nAlign = 'left';
+        var nIcons = '';
+        var nType = 'danger';
+        var nAnimIn = 'animated rotateInDownLeft';
+        var nAnimOut = 'animated rotateOutDownLeft';
+        var title = 'Insurgents';
+        var message = 'Select Starting Point for Combat Patrol';
+        notify(nFrom, nAlign, nIcons, nType, nAnimIn, nAnimOut, title, message);
+    });
+
+
+    bottomRight = (function() {
+        var nFrom = 'bottom';
+        var nAlign = 'right';
+        var nIcons = '';
+        var nType = 'danger';
+        var nAnimIn = 'animated rotateIn';
+        var nAnimOut = 'animated rotateOut';
+        var title = 'Insurgents';
+        var message = 'Select Ending Point for Combat Patrol';
+        notify(nFrom, nAlign, nIcons, nType, nAnimIn, nAnimOut, title, message);
+    });
+
+
+    warZone = (function() {
+        var nFrom = 'bottom';
+        var nAlign = 'center';
+        var nIcons = '';
+        var nType = 'inverse';
+        var nAnimIn = 'animated fadeInUp';
+        var nAnimOut = 'animated fadeOutDown';
+        var title = 'WAR ZONE DETECTED';
+        var message = 'Black zone is declared "Off Limits" due to fighting between <strong>Security Forces</strong> and <strong>Insurgents</strong>';
+        notify(nFrom, nAlign, nIcons, nType, nAnimIn, nAnimOut, title, message);
+    });
+
+
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhd1Qr6F0dlMSio9KthBj23Woj_NMpjXM&callback=initMap">
+</script>
+</html>

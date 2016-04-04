@@ -10,7 +10,6 @@ urlpatterns = [
     url(r'', include('core.urls')),
     url(r'^post-it/', include('post_it.urls')),
     url(r'^signature-maker/', include('signature_maker.urls')),
-    url(r'^common-path/', include('common_path.urls')),
     url(r'^accounts/login/$', login),
     url(r'^accounts/logout/$', logout, {'next_page': '/'}),
 ] + static(
