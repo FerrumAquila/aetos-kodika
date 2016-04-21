@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     'post_it',
     'signature_maker',
     'common_path',
+    'web_render',
 )
 
 # A sample logging configuration. The only tangible logging
