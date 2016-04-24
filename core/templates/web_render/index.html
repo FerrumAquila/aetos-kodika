@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Web Render</title>
+
+</head>
+<body>
+    <div id="target"></div>
+    <input type="submit" value="Take Screenshot Of Div" onclick="capture();" />
+    <form method="POST" enctype="multipart/form-data" action="{% url 'web_render_save_image' %}" id="myForm">
+        {% csrf_token %}
+        <input type="hidden" name="img_val" id="img_val" value="" />
+    </form>
+</body>
+
+<!-- Javascript Libraries -->
+<script src="{% static 'js/web_render/main.js' %}"></script>
+<script src="{% static 'js/web_render/html2canvas.js' %}"></script>
+<script src="{% static 'js/web_render/jquery.plugin.html2canvas.js' %}"></script>
+
+<script>
+$.get('get-html', {'url': 'http://www.techcrunch.com'}, function(data){
+    response = JSON.parse(data);
+    $('#target').html(response.html);
+})
+
+function capture() {
+    alert('capture called');
+    $('#target').html2canvas({
+        onrendered: function (canvas) {
+            $('#img_val').val(canvas.toDataURL("image/png"));
+            //download();
+            document.getElementById("myForm").submit();
+        }
+    });
+}
+</script>
+</html>
