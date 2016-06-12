@@ -9,6 +9,7 @@ admin.autodiscover()
 urlpatterns = [
     url(r'', include('core.urls')),
     url(r'^post-it/', include('post_it.urls')),
+    url(r'^alpha-mike/', include('alpha_mike.urls')),
     url(r'^signature-maker/', include('signature_maker.urls')),
     url(r'^accounts/login/$', login),
     url(r'^accounts/logout/$', logout, {'next_page': '/'}),
