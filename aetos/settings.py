@@ -163,3 +163,9 @@ LOGGING = {
 
 # TODO: add these into separate config.py file
 SHELL_PLUS = "ipython"
+
+
+try:
+    from local_settings import *
+except:
+    pass
